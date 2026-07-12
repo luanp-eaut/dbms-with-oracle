@@ -1,7 +1,5 @@
 # Hệ quản trị CSDL với Oracle
 
-Slides bài giảng và bài tập thực hành cho học phần **Hệ quản trị Cơ sở dữ liệu với Oracle**.
-
 ---
 
 ## 📚 Tổng quan khóa học
