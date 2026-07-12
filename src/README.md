@@ -13,7 +13,7 @@ Khóa học bao gồm 4 chương, bao gồm các nội dung sau đây:
 
 ---
 
-## 📖 Tóm tắt nội dung
+## 📖 Nội dung học phần
 
 ### Chương 1: Giới thiệu tổng quan
 
