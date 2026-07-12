@@ -88,6 +88,8 @@ Báo cáo bài tập lớn phải thể hiện đầy đủ các nội dung và 
 
 **III. DANH SÁCH CÁC ĐỀ TÀI**
 
+<div class="scoring">
+
 | **Mã <br>đề tài** | **Tên đề tài**                                                              |
 | ----------------- | --------------------------------------------------------------------------- |
 | 1                 | Xây dựng CSDL cho hệ thống quản lý ngân hàng máu.                           |
@@ -131,4 +133,4 @@ Báo cáo bài tập lớn phải thể hiện đầy đủ các nội dung và 
 | 39                | Xây dựng CSDL cho hệ thống quản lý vườn quốc gia và bảo tồn động thực vật.  |
 | 40                | Đề mở                                                                       |
 
-**……………………HẾT……………………**
+</div>
