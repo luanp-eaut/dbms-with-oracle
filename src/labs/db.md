@@ -23,7 +23,7 @@ Cơ sở dữ liệu EMP/DEPT chuẩn Oracle sẽ được sử dụng cho các 
 | COMM     | NUMBER(7,2)  |             | Hoa hồng         |
 | DEPTNO   | NUMBER(2)    | FOREIGN KEY | Mã phòng (FK)    |
 
-### Code khởi tạo CSDL thực hành
+### Code khởi tạo
 
 ```sql
 -- ====================================================
