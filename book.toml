@@ -5,6 +5,7 @@ language = "en"
 
 [output.html]
 additional-css = ["custom.css"]
+site-url = "/dbms-with-oracle/"
 
 [output.html.print]
 enable = false
