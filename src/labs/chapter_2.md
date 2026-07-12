@@ -1,101 +1,124 @@
-## Bài tập thực hành – Chương 2. Ngôn ngữ SQL
+## Bài tập thực hành Chương 2
 
-### Truy vấn cơ bản (SELECT)
+---
 
-1. Hiển thị tất cả thông tin nhân viên
-2. Hiển thị tên và lượng của tất cả nhân viên
-3. Hiển thị tên, chức vụ và ngày vào làm của nhân viên
-4. Hiển thị mã nhân viên, tên và lượng sắp xếp theo lượng giảm dần
-5. Hiển thị tên và lượng của nhân viên có lượng > 2000
-6. Hiển thị tên và chức vụ của nhân viên có chức vụ là 'MANAGER'
-7. Hiển thị tên và ngày vào làm của nhân viên gia nhập năm 1981
+### PHẦN 1 – DATA DEFINITION LANGUAGE (DDL)
 
-### Hàm thống kê (Aggregate Functions)
+**Bài 1**. Tạo bảng **DEPARTMENT** gồm các cột:
 
-8. Tính tổng lượng của toàn công ty
-9. Tính lượng trung bình của nhân viên
-10. Tìm lượng cao nhất và thấp nhất
-11. Đếm tổng số nhân viên
-12. Đếm số nhân viên có hoa hồng (COMM không NULL)
-13. Tính tổng lượng theo từng phòng ban
-14. Tính lượng trung bình theo chức vụ
+- `DEPT_ID` (số, khóa chính)
+- `DEPT_NAME` (chuỗi không quá 50, NOT NULL)
+- `LOCATION` (chuỗi 30, có thể NULL)
+- `BUDGET` (số với 2 chữ số thập phân, mặc định 0)
 
-### Truy vấn có điều kiện (WHERE)
+**Bài 2**. Tạo bảng **EMPLOYEE_AUDIT** dùng để lưu vết thay đổi của bảng EMP, gồm:
 
-15. Hiển thị nhân viên có lượng từ 1500 đến 3000
-16. Hiển thị nhân viên thuộc phòng 10 hoặc 20
-17. Hiển thị nhân viên không có người quản lý (MGR IS NULL)
-18. Hiển thị nhân viên có tên bắt đầu bằng chữ ‘S’
-19. Hiển thị nhân viên có tên chứa chữ ‘A’ ở vị trí thứ 2
-20. Hiển thị nhân viên vào làm trong tháng 12
+- `AUDIT_ID` (số tự tăng – dùng `GENERATED ALWAYS AS IDENTITY`)
+- `EMPNO` (số 4, NOT NULL)
+- `ACTION` (chuỗi 10, NOT NULL, kiểm tra giá trị trong ('INSERT','UPDATE','DELETE'))
+- `CHANGE_DATE` (ngày giờ, mặc định SYSDATE)
+- `USER_NAME` (chuỗi 30, mặc định USER)
 
-### JOIN và Subquery
+**Bài 3**. Thêm ràng buộc khóa ngoại cho bảng **EMPLOYEE_AUDIT** tham chiếu đến cột `EMPNO` của bảng EMP.
 
-21. Hiển thị tên nhân viên và tên phòng ban tương ứng
-22. Hiển thị tên nhân viên, tên người quản lý của họ
-23. Hiển thị nhân viên có lương cao hơn lương trung bình
-24. Hiển thị nhân viên có lương cao nhất trong phòng
-25. Hiển thị nhân viên có lương cao hơn lương của nhân viên ‘SMITH’
-26. Hiển thị phòng ban không có nhân viên
-27. Hiển thị nhân viên và tên phòng của họ, sắp xếp theo tên phòng
-28. Hiển thị tên nhân viên, tên phòng và địa điểm làm việc
+**Bài 4**. Thêm cột `EMAIL` (VARCHAR2(100)) vào bảng EMP.
 
-### Nhóm dữ liệu (GROUP BY)
+**Bài 5**. Sửa đổi cột `ENAME` trong bảng EMP thành `VARCHAR2(30)` và thêm ràng buộc NOT NULL cho cột này.
 
-29. Đếm số nhân viên theo từng phòng ban
-30. Tính tổng lượng và lượng trung bình theo phòng ban
-31. Hiển thị phòng ban có nhiều hơn 3 nhân viên
-32. Tính tổng lượng theo chức vụ
-33. Hiển thị chức vụ có lượng trung bình > 2000
-34. Đếm số nhân viên theo từng năm gia nhập
+**Bài 6**. Đổi tên bảng **EMPLOYEE_AUDIT** thành **EMP_CHANGE_LOG**.
 
-### Xử lý NULL và Hàm điều kiện
+**Bài 7**. Xóa cột `EMAIL` khỏi bảng EMP.
 
-35. Hiển thị tên, lượng và hoa hồng (nếu NULL thì hiển thị 0)
-36. Tính tổng thu nhập (SAL + COMM) của mỗi nhân viên
-37. Phân loại nhân viên: ‘Cao’ nếu SAL > 2500, ‘Trung bình’ nếu 1500-2500, ‘Thấp’ nếu < 1500
-38. Hiển thị tên và thâm niên (số năm làm việc)
-39. Hiển thị tên và số tháng làm việc
-40. Tăng lượng 10% cho tất cả nhân viên (chỉ hiển thị, không UPDATE)
+**Bài 8**. Xóa ràng buộc khóa ngoại vừa tạo ở Bài 3 (giả sử tên ràng buộc là `FK_AUDIT_EMP`).
 
-### Truy vấn nâng cao
+**Bài 9**. Sử dụng lệnh `TRUNCATE` để xóa toàn bộ dữ liệu trong bảng **EMP_CHANGE_LOG** nhưng giữ nguyên cấu trúc.
 
-41. Hiển thị top 3 nhân viên có lương cao nhất
-42. Hiển thị nhân viên có lương cao thứ 2
-43. Hiển thị nhân viên có cùng chức vụ với ‘SMITH’
-44. Hiển thị nhân viên vào làm cùng năm với ‘KING’
-45. Tìm nhân viên không có ai dưới quyền (không quản lý ai)
-46. Hiển thị cấp bậc quản lý: nhân viên → quản lý → quản lý cấp cao
-47. Hiển thị danh sách nhân viên và cấp bậc của họ trong công ty
+**Bài 10**. Xóa hoàn toàn bảng **EMP_CHANGE_LOG** khỏi cơ sở dữ liệu (kể cả các ràng buộc tham chiếu).
 
-### DML (INSERT, UPDATE, DELETE)
+---
 
-48. Thêm một phòng ban mới: DEPTNO=50, DNAME=‘MARKETING’, LOC=‘BOSTON’
-49. Thêm một nhân viên mới với thông tin tùy chọn
-50. Tăng lượng 15% cho nhân viên phòng 20
-51. Giảm lượng 5% cho nhân viên có lượng > 3000
-52. Xóa nhân viên có mã 9999 (nếu có)
-53. Cập nhật địa điểm của phòng 30 thành ‘SAN FRANCISCO’
-54. Cập nhật người quản lý cho nhân viên không có quản lý
+### PHẦN 2 – DATA MANIPULATION LANGUAGE (DML)
 
-### VIEW và INDEX
+**Bài 11**. Chèn một phòng ban mới vào bảng DEPT với mã 60, tên 'HR', vị trí 'Hanoi'.
 
-55. Tạo view hiển thị thông tin nhân viên và phòng ban
-56. Tạo view thống kê lượng theo phòng
-57. Tạo index trên cột ENAME để tăng tốc tìm kiếm
-58. Tạo index composite trên DEPTNO và JOB
-59. Tạo view hiển thị nhân viên có lượng cao hơn trung bình
+**Bài 12**. Chèn nhân viên mới vào bảng EMP với các thông tin:
 
-### Bài tập tổng hợp
+- EMPNO = 8001
+- ENAME = 'LE VAN A'
+- JOB = 'MANAGER'
+- MGR = 7839
+- HIREDATE = '01-01-2026' (dùng TO_DATE hoặc DATE literal)
+- SAL = 5000
+- DEPTNO = 60
 
-60. Tạo báo cáo tổng hợp: Phòng ban, Số nhân viên, Tổng lượng, Lượng TB, Lượng cao nhất
-61. Hiển thị nhân viên và tổng số người dưới quyền (nếu là quản lý)
-62. Tìm người quản lý có nhiều nhân viên nhất
-63. Phân tích cơ cấu nhân viên theo chức vụ và phòng ban
-64. Tính phần trăm lượng của mỗi nhân viên so với tổng lượng phòng
-65. Tìm nhân viên có lượng cao hơn lượng trung bình của phòng họ
-66. Hiển thị lịch sử thay đổi lượng (giả sử có bảng SALARY_HISTORY)
-67. Tìm nhân viên vào làm trong 5 ngày liên tiếp (nếu có dữ liệu)
-68. Phân tích xu hướng tuyển dụng theo quý
-69. Tìm nhân viên có thâm niên > 10 năm nhưng lượng < trung bình
-70. Đề xuất tăng lượng: +20% cho người có thâm niên > 15 năm, +10% cho > 10 năm
+**Bài 13**. Chèn đồng thời 2 nhân viên vào bảng EMP bằng câu lệnh `INSERT ALL`:
+
+- (8002, 'NGUYEN THI B', 'CLERK', 8001, SYSDATE, 2000, NULL, 60)
+- (8003, 'TRAN VAN C', 'ANALYST', 8001, SYSDATE, 4000, NULL, 60)
+
+**Bài 14**. Chèn dữ liệu từ bảng EMP vào bảng **EMP_HISTORY** (đã tạo sẵn) với điều kiện nhân viên có DEPTNO = 10.
+
+**Bài 15**. Cập nhật lương (SAL) tăng 15% cho tất cả nhân viên thuộc phòng 20.
+
+**Bài 16**. Cập nhật đồng thời JOB thành 'SENIOR CLERK' và SAL thành 3000 cho nhân viên có EMPNO = 8002.
+
+**Bài 17**. Xóa nhân viên có EMPNO = 8003 khỏi bảng EMP.
+
+**Bài 18**. Xóa tất cả nhân viên thuộc phòng 30.
+
+**Bài 19**. Viết câu lệnh `SELECT` để hiển thị danh sách nhân viên (EMPNO, ENAME, SAL) với mức lương lớn hơn 2500, sắp xếp theo SAL giảm dần.
+
+**Bài 20**. Viết câu lệnh `SELECT` kết hợp bảng EMP và DEPT để hiển thị EMPNO, ENAME, DNAME, LOC cho nhân viên có JOB = 'MANAGER'.
+
+---
+
+### PHẦN 3 – DATA CONTROL LANGUAGE (DCL)
+
+**Bài 21**. Tạo một user tên **USER1** với mật khẩu `pass123` (cần quyền DBA).
+
+**Bài 22**. Cấp quyền `CREATE SESSION` cho user **USER1** để có thể đăng nhập.
+
+**Bài 23**. Tạo một role tên **ROLE_READ** với mục đích chỉ đọc dữ liệu.
+
+**Bài 24**. Cấp quyền `SELECT` trên bảng EMP và DEPT cho role **ROLE_READ**.
+
+**Bài 25**. Gán role **ROLE_READ** cho user **USER1**.
+
+**Bài 26**. Tạo user **USER2** và gán trực tiếp quyền `INSERT`, `UPDATE` trên bảng EMP cho user này (không qua role).
+
+**Bài 27**. Cấp quyền `DELETE` trên bảng EMP cho user **USER1** với tùy chọn `WITH GRANT OPTION`.
+
+**Bài 28**. Thu hồi quyền `DELETE` trên bảng EMP của user **USER1**.
+
+**Bài 29**. Thu hồi toàn bộ quyền trên bảng DEPT từ role **ROLE_READ**.
+
+**Bài 30**. Viết câu truy vấn kiểm tra tất cả các quyền hệ thống (system privileges) mà user **USER1** đang có.
+
+---
+
+### PHẦN 4 – TRANSACTION CONTROL LANGUAGE (TCL)
+
+**Bài 31**. Thực hiện một giao dịch: tăng lương 10% cho tất cả nhân viên phòng 10, sau đó xác nhận (`COMMIT`).
+
+**Bài 32**. Giả sử bạn vừa xóa nhầm một nhân viên (EMPNO = 8002), hãy viết lệnh `ROLLBACK` để khôi phục lại (trước khi COMMIT).
+
+**Bài 33**. Tạo một `SAVEPOINT` tên `SP_BEFORE_UPDATE` trước khi cập nhật lương, sau đó cập nhật lương tăng 20% cho phòng 30. Nếu phát hiện sai sót, rollback về `SP_BEFORE_UPDATE` và commit giao dịch rỗng.
+
+**Bài 34**. Mở một giao dịch, thực hiện 3 thao tác:
+
+- Chèn một nhân viên mới (EMPNO = 9001)
+- Cập nhật lương nhân viên 9001 thành 3000
+- Xóa nhân viên 9001  
+  Sau đó rollback toàn bộ.
+
+**Bài 35**. Sử dụng `SAVEPOINT` để chỉ rollback một phần: sau khi chèn nhân viên 9002, đặt savepoint A; sau khi cập nhật lương, đặt savepoint B; sau đó rollback về savepoint A để giữ lại chèn nhưng hủy cập nhật.
+
+**Bài 36**. Viết một giao dịch chuyển nhân viên từ phòng 10 sang phòng 20, đồng thời giảm lương 5% cho họ. Nếu bất kỳ lệnh nào thất bại, rollback. Sử dụng cấu trúc xử lý ngoại lệ (PL/SQL) hoặc giả định.
+
+**Bài 37**. Thực hiện một giao dịch với 2 lệnh UPDATE và 1 lệnh INSERT, sau đó COMMIT. Kiểm tra kết quả bằng SELECT.
+
+**Bài 38**. Tạo một giao dịch chỉ đọc (`SET TRANSACTION READ ONLY`) và thử thực hiện UPDATE – giải thích lỗi.
+
+**Bài 39**. Sử dụng `ROLLBACK TO SAVEPOINT` để khôi phục trạng thái trước khi thực hiện một DELETE có điều kiện (giả sử xóa nhân viên có SAL < 1000, nhưng sau đó phát hiện có lỗi).
+
+**Bài 40**. Tạo bảng **TEST** và thực hiện một giao dịch gồm INSERT, UPDATE, DELETE. Sau đó thực hiện lệnh DDL (ví dụ: ALTER TABLE) và quan sát tác động của COMMIT ngầm định. Giải thích tại sao không thể ROLLBACK sau DDL.
