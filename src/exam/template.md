@@ -34,7 +34,7 @@ LỚP TÍN CHỈ:....
 
 <div class="teacher">
 
-Giảng viên hướng dẫn: ThS Nguyễn Phồn Lữa
+Giảng viên hướng dẫn: Th.S Nguyễn Phồn Lữa
 
 Danh sách sinh viên thực hiện: Nhóm…..
 
