@@ -16,12 +16,14 @@ concurrency:
   group: "pages"
   cancel-in-progress: true
 
+# ... (các dòng phía trên giữ nguyên)
 jobs:
   deploy:
     environment:
       name: github-pages
-      url: ${{ steps: deployment.outputs.page_url }}
+      url: ${{ steps.deployment.outputs.page_url }} # Sửa dấu ":" thành dấu "." ở đây
     runs-on: ubuntu-latest
+# ... (các dòng phía dưới giữ nguyên)
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
