@@ -1,5 +1,7 @@
 ## Đáp án thi kết thúc học phần
 
+---
+
 **Đáp án đề thi kết thúc học phần có kết hợp vấn đáp theo các tiêu chí như sau:**
 
 | **STT** | **Nội dung tiêu chí**                                                                                                                                             | **Điểm đánh giá (tối đa)** |
