@@ -8,7 +8,7 @@ Khóa học bao gồm 4 chương, bao gồm các nội dung sau đây:
 
 - [Chương 1. Giới thiệu tổng quan, cài đặt môi trường](slides/chapter_1_intro.html)
 - [Chương 2. Ngôn ngữ SQL trong Oracle](slides/chapter_2_sql.html)
-- [Chương 3. Lập trình `PL/SQL`](slides/chapter_3_plsql.html)
+- [Chương 3. Lập trình PL/SQL](slides/chapter_3_plsql.html)
 - [Chương 4. Kiến trúc và Quản trị hệ thống](slides/chapter_4_admin.html)
 
 ---
