@@ -14,6 +14,8 @@ paginate: true
 
 </div>
 
+### Giảng viên: Nguyễn Phồn Lữa
+
 ---
 
 <!-- _class: toc -->
