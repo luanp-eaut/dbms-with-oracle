@@ -1,0 +1,7 @@
+[book]
+title = "Hệ quản trị CSDL với Oracle"
+authors = ["Nguyễn Phồn Lữa"]
+language = "en"
+
+[output.html]
+additional-css = ["custom.css"]
