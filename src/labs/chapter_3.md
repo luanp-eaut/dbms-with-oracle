@@ -1,4 +1,4 @@
-## Bài tập thực hành Chương 3
+## Bài tập thực hành chương 3
 
 ---
 

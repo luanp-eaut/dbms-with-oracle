@@ -1,4 +1,4 @@
-## Bài tập thực hành Chương 2
+## Bài tập thực hành chương 2
 
 ---
 
