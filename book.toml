@@ -6,5 +6,8 @@ language = "en"
 [output.html]
 additional-css = ["custom.css"]
 
+[output.html.search]
+enable = false
+
 [output.html.print]
 enable = false
