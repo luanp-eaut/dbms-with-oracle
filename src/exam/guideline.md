@@ -22,7 +22,7 @@ Báo cáo cần được trình bày theo đúng mẫu quy định. Dưới đâ
 - **Phạm vi:** Xác định rõ hệ thống chỉ tập trung vào những tác vụ, phân hệ nào (ví dụ: không bao gồm quản lý nhân sự của công ty, chỉ tập trung vào quản lý bán hàng và kho).
 - **Đối tượng sử dụng:** Ai sẽ là người dùng của hệ thống? (Ví dụ: Quản trị viên, Nhân viên bán hàng, Nhân viên kho, Khách hàng...).
 
-### Chương 2. Phân tích Yêu cầu
+### Chương 2. Phân tích yêu cầu
 
 **2.1. Danh sách các Use Cases chính:**
 
@@ -38,7 +38,7 @@ Báo cáo cần được trình bày theo đúng mẫu quy định. Dưới đâ
 
 ### Chương 3. Thiết kế Cơ sở dữ liệu quan hệ
 
-**3.1. Xác định Thực thể, Thuộc tính và Mối quan hệ:**
+**3.1. Xác định Thực thể, Thuộc tính, Quan hệ:**
 
 - **Thực thể:** Liệt kê các đối tượng chính (Ví dụ: KHACH_HANG, DON_HANG, CHI_TIET_DON_HANG, SAN_PHAM, NHAN_VIEN...).
 - **Thuộc tính:** Với mỗi thực thể, liệt kê các thuộc tính kèm theo kiểu dữ liệu và ý nghĩa. **Đặc biệt nhấn mạnh Khóa Chính (Primary Key - PK).**
@@ -106,29 +106,29 @@ Báo cáo cần được trình bày theo đúng mẫu quy định. Dưới đâ
 
 - Sử dụng các câu lệnh `INSERT INTO` để tạo dữ liệu giả định (data mẫu) cho các bảng. Dữ liệu cần đa dạng, phong phú để có thể kiểm thử toàn diện hệ thống.
 
-### Chương 6. Phân quyền và Bảo mật CSDL
+### Chương 6. Phân quyền và bảo mật CSDL
 
-**6.1. Thiết kế Role và Gán quyền:**
+**6.1. Thiết kế roles và gán quyền:**
 
 - Tạo ít nhất 02 Role nghiệp vụ.
 - _Ví dụ:_ `ROLE_QUAN_TRI` (có mọi quyền), `ROLE_NHAN_VIEN` (chỉ có quyền SELECT, INSERT, UPDATE trên các bảng nghiệp vụ).
 - Sử dụng câu lệnh `GRANT` và `REVOKE` để gán quyền cho các Role.
 - **Trình bày các câu lệnh này** và giải thích ý nghĩa của từng quyền.
 
-**6.2. Tạo User và Phân quyền:**
+**6.2. Tạo User và phân quyền:**
 
 - Tạo ít nhất 02 User kiểm thử.
 - _Ví dụ:_ `USER_QUAN_TRI` và `USER_NHAN_VIEN`.
 - Gán các Role vừa tạo cho các User này.
 
-**6.3. Kiểm tra Quyền truy cập:**
+**6.3. Kiểm tra quyền truy cập:**
 
 - Đăng nhập vào từng User và thực hiện các thao tác (SELECT, INSERT, DELETE) để chứng minh sự khác biệt về quyền hạn.
 - Đưa ra kết quả minh họa (Ví dụ: User nhân viên khi thực hiện `DELETE` trên bảng `NHAN_VIEN` sẽ bị lỗi `insufficient privileges`).
 
 ### Chương 7. Kiểm thử
 
-**7.1. Các Kịch bản Kiểm thử:**
+**7.1. Các Kịch bản kiểm thử:**
 
 - Xây dựng ít nhất 10 kịch bản kiểm thử. Mỗi kịch bản cần có:
   1.  **Mã kịch bản:** (Ví dụ: TC01).
@@ -140,7 +140,7 @@ Báo cáo cần được trình bày theo đúng mẫu quy định. Dưới đâ
 
 ### Chương 8. Kết luận
 
-**8.1. Kết quả đạt được và Khó khăn:**
+**8.1. Kết quả đạt được và khó khăn:**
 
 - Tóm tắt những gì nhóm đã làm được, những mục tiêu đã đạt.
 - Nêu ra những khó khăn, vướng mắc trong quá trình thực hiện (Ví dụ: Xác định ràng buộc dữ liệu phức tạp, lập trình PL/SQL, xử lý lỗi...).
