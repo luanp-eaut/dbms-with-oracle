@@ -14,8 +14,8 @@ ol, ul {
     margin-bottom: 0;
     padding-top: 0;
     padding-bottom: 0;
-    padding-left: 1.5em;
-    list-style-position: inside;
+    padding-left: 2em;
+    /* list-style-position: inside; */
 }
 /* Căn giữa tiêu đề (th) và dữ liệu (td) của cột 1 và cột 3 */
 .scoring table th:nth-child(1),
@@ -156,4 +156,15 @@ ol, ul {
     height: 100%;
     overflow-y: auto !important; /* Chỉ cho phép bản thân iframe của Google Form được cuộn dọc */
     border: none;
+}
+
+.guideline h3{
+  font-size: 20px;
+  margin-top: 10px;
+  margin-bottom: 5px;
+}
+.guideline p {
+  padding-top: 5px!important;
+  padding-bottom: 5px!important;
+  margin: 0;
 }
