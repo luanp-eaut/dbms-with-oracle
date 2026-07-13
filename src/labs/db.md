@@ -353,7 +353,7 @@ insert into emp (
 commit;
 
 -- ====================================================
--- 6. Kiểm tra kết quả (tuỳ chọn)
+-- 5. Kiểm tra kết quả (tuỳ chọn)
 -- ====================================================
 -- SELECT * FROM DEPT;
 -- SELECT * FROM EMP;

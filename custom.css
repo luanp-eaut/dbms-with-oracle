@@ -137,3 +137,23 @@ ol, ul {
     margin-top: auto;
     padding-bottom: 8px;
   }
+
+  /* Tối ưu hóa khung chứa Google Form */
+.google-form-wrapper {
+    width: 100%;
+    height: calc(100vh - 160px) !important; 
+    overflow: hidden !important;
+    margin: 20px 0;
+    background: #ffffff; /* Giúp form nổi bật kể cả khi user đổi sang giao diện tối (Dark mode) */
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.google-form-wrapper iframe {
+    /* display: block;
+    max-width: 100%; */
+    width: 100%;
+    height: 100%;
+    overflow-y: auto !important; /* Chỉ cho phép bản thân iframe của Google Form được cuộn dọc */
+    border: none;
+}
