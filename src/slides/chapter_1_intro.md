@@ -2,7 +2,7 @@
 marp: true
 theme: eaut
 paginate: true
-transition: flip
+transition: slide
 ---
 
 <!-- _class: cover -->
