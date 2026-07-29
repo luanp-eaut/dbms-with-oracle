@@ -2,7 +2,7 @@
 marp: true
 theme: eaut
 paginate: true
-transition: slide
+transition: zoom
 ---
 
 <!-- _class: cover -->
