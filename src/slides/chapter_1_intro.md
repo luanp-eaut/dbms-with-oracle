@@ -23,10 +23,88 @@ transition: zoom
 
 # Nội dung
 
+- Giới thiệu học phần
 - Giới thiệu tổng quan về CSDL
 - Hệ quản trị CSDL
 - Công cụ quản trị & phát triển
 - Thiết lập môi trường thực hành
+
+
+---
+
+<!-- _class: section -->
+
+# Giới thiệu học phần
+
+---
+
+# Giới thiệu học phần
+
+- **Tên học phần:** Hệ quản trị CSDL với Oracle
+- **Giảng viên:** Nguyễn Phồn Lữa
+  - Email: luanp@eaut.edu.vn
+  - Điện thoại: 0902624295
+- **Số tín chỉ:** 3 TC (2 Lý thuyết, 1 Thực hành) ~ 15 buổi lên lớp. Thời gian tự học: 75 giờ.
+- **Mục tiêu học phần:**
+  - Nắm vững kiến thức nền tảng về Hệ quản trị CSDL.
+  - Ứng dụng giải quyết các bài toán thực tế trong quản trị CSDL với Oracle.
+- **Hình thức đánh giá:**
+  - Chuyên cần: 10%
+  - Quá trình (Kiểm tra giữa kỳ): 30%
+  - Thi cuối kỳ (Bài tập lớn): 60%
+
+---
+
+# Phương pháp đánh giá
+
+- **Điểm chuyên cần (10%):**
+  - Mỗi sinh viên có 10 điểm chăm chỉ ban đầu.
+  - Công thức tính: $10 - (x + 2y + 2z - 2t)$
+  - $x$: Số buổi đi muộn (muộn quá 5 phút sau khi điểm danh).
+  - $y$: Số buổi nghỉ không có lý do.
+  - $z$: Số lần vi phạm ý thức học tập (nội quy, điểm danh hộ, không làm bài tập).
+  - $t$: Số lần xung phong phát biểu, hỗ trợ bạn bè trong học tập.
+- **Điểm quá trình (30%):** Đánh giá qua các bài kiểm tra giữa kỳ (tự luận/thực hành) và kết quả làm bài tập hàng ngày.
+- **Điểm cuối kỳ (60%):** Đánh giá qua Bài tập lớn (BTL).
+  - Hình thức báo cáo: 10%
+  - Nội dung báo cáo: 50%
+  - Vấn đáp: 40%
+
+---
+
+# Nội quy lớp học
+
+- Tham gia đầy đủ các buổi học lý thuyết và thực hành.
+- Đi học đúng giờ, không đi muộn quá 5 phút sau khi điểm danh.
+- Nghỉ học phải có lý do chính đáng và xin phép giảng viên trước.
+- Tuân thủ tuyệt đối các quy định về thi cử, kiểm tra, không gian lận dưới mọi hình thức.
+- Tích cực tham gia phát biểu xây dựng bài, hỗ trợ bạn bè trong quá trình học tập.
+- Tôn trọng giảng viên và các bạn trong lớp, giữ gìn trật tự và vệ sinh chung.
+
+---
+
+# Bài tập lớn
+
+- **Mục đích:** Sử dụng để đánh giá kết quả học tập giữa kỳ và cuối kỳ.
+- **Hình thức tổ chức:**
+  - Chia lớp thành các nhóm từ 3 - 5 sinh viên.
+  - Các nhóm tự chọn đề tài, đảm bảo không trùng lặp đề tài giữa các nhóm.
+- **Yêu cầu thực hiện:**
+  - Hoàn thành đề tài đáp ứng đúng yêu cầu kỹ thuật và nội dung.
+  - Viết báo cáo theo mẫu quy định và nộp trên hệ thống e-learning.
+- **Đánh giá BTL:**
+  - Hình thức báo cáo: 10%
+  - Nội dung báo cáo: 50%
+  - Vấn đáp: 40%
+
+---
+
+# Nội dung học phần
+
+- **Chương 1:** Tổng quan về Hệ quản trị CSDL
+- **Chương 2:** Ngôn ngữ SQL
+- **Chương 3:** Lập trình PL/SQL
+- **Chương 4:** Kiến trúc & Quản trị Oracle DBMS
 
 ---
 
