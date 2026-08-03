@@ -74,12 +74,20 @@ transition: zoom
 
 # Nội quy lớp học
 
-- Tham gia đầy đủ các buổi học lý thuyết và thực hành.
-- Đi học đúng giờ, không đi muộn quá 5 phút sau khi điểm danh.
-- Nghỉ học phải có lý do chính đáng và xin phép giảng viên trước.
-- Tuân thủ tuyệt đối các quy định về thi cử, kiểm tra, không gian lận dưới mọi hình thức.
-- Tích cực tham gia phát biểu xây dựng bài, hỗ trợ bạn bè trong quá trình học tập.
-- Tôn trọng giảng viên và các bạn trong lớp, giữ gìn trật tự và vệ sinh chung.
+<div style="font-size: 0.72em">
+
+| STT | Hành vi cấm vi phạm trong giờ học | Xử lý khi vi phạm |
+| --- | --- | --- |
+| 1 | Trong phòng thực hành, sinh viên sử dụng máy tính để chơi game. | Cấm thi |
+| 2 | Sử dụng điện thoại cá nhân chơi game trong phòng thực hành hoặc phòng lý thuyết. | Lần 1: Trừ điểm kết quả học tập.<br>Lần 2: Cấm thi |
+| 3 | Sao lưu những hình ảnh, phim, tài liệu không được phép, tải game, xem phim trong giờ thực hành | Cấm thi |
+| 4 | Sinh viên nằm ra bàn để ngủ, để làm việc riêng. | Nhắc nhở đến lần 2 thì coi như SV đó vắng trong tiết học đó |
+| 5 | Sinh viên cần mang theo tài liệu, vở ghi và bút viết khi đến lớp học | Thiếu đồ dùng học tập trong tiết học nào thì tiết đó không tính chuyên cần |
+| 6 | Vắng mặt từ 20% số buổi trở lên | Cấm thi |
+| 7 | Nói chuyện riêng trong lớp, hút thuốc hoặc những chuyện không liên quan đến môn học. | Mời ra ngoài lớp học, tiết đó vắng |
+| 8 | Mặc quần áo ngắn không phù hợp | Mời ra ngoài lớp học, tiết đó vắng |
+
+</div>
 
 ---
 
