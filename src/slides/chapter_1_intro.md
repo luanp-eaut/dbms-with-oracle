@@ -74,7 +74,7 @@ transition: zoom
 
 # Nội quy lớp học
 
-<div style="font-size: 0.72em">
+<div style="font-size: 0.72em;">
 
 | STT | Hành vi cấm vi phạm trong giờ học | Xử lý khi vi phạm |
 | --- | --- | --- |
