@@ -61,6 +61,7 @@ Báo cáo bài tập lớn phải thể hiện đầy đủ các nội dung và 
   - Sequence sinh khóa tự động;
   - View phục vụ truy vấn và phân quyền.
 - Xây dựng dữ liệu mẫu phục vụ kiểm thử hệ thống.
+- Triển khai đầy đủ các thành phần đã xây dựng trong phần 4
 
 **6\. Phân quyền, bảo mật CSDL**
 
