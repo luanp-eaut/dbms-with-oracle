@@ -1,11 +1,19 @@
-select count(*)
-  from dept;
-
-select e.empno,
-       e.ename,
-       e.job,
-       d.dname,
-       d.loc
-  from emp e
-  join dept d
-on e.deptno = d.deptno;
+   set transaction read only;
+insert into emp (
+   empno,
+   ename,
+   job,
+   mgr,
+   hiredate,
+   sal,
+   comm,
+   deptno
+) values
+   ( 80011,
+     'LE VAN A',
+     'MANAGER',
+     7839,
+     sysdate,
+     5000,
+     null,
+     60 );
