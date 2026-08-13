@@ -290,8 +290,8 @@ END;
 # Kiểu dữ liệu vô hướng (Scalar) trong PL/SQL
 
 - **NUMBER:** Số học (số nguyên, số thực). Có thể định nghĩa độ chính xác và số chữ số thập phân.
-- **CHAR:** Chuỗi cố định độ dài (tối đa 32767 bytes).
-- **VARCHAR2:** Chuỗi biến đổi độ dài (tối đa 32767 bytes) - **được dùng phổ biến nhất**.
+- **CHAR:** Chuỗi độ dài cố định (tối đa 32767 bytes).
+- **VARCHAR2:** Chuỗi độ dài biến đổi (tối đa 32767 bytes) - **được dùng phổ biến nhất**.
 - **DATE:** Lưu trữ ngày và giờ (bao gồm thế kỷ, năm, tháng, ngày, giờ, phút, giây).
 - **BOOLEAN:** Lưu trữ giá trị `TRUE`, `FALSE`, hoặc `NULL`. (**Chỉ dùng trong PL/SQL**, không dùng trong bảng).
 - **TIMESTAMP:** Mở rộng của DATE, hỗ trợ phần nhỏ của giây (fractional seconds).
