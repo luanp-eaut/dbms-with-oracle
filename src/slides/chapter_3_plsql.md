@@ -476,6 +476,58 @@ END;
 
 ---
 
+# Nested Table lưu trữ vĩnh viễn trong CSDL
+
+- Khi dùng Nested Table làm kiểu dữ liệu cho một cột trong bảng DB, Oracle **không lưu dữ liệu tập hợp ngay bên trong dòng của bảng chính**. Thay vào đó, nó tạo ra một **Bảng phụ độc lập (Out-of-line storage table)**.
+
+- **Cơ chế liên kết Out-of-Line**
+
+ - **Bảng chính (Parent Table):** Chứa cột mang kiểu Nested Table. Cột này thực chất chỉ lưu một con trỏ 16-byte gọi là **NESTED_TABLE_ID** (hoặc `SETID`).
+ - **Bảng phụ (Store Table):** Bảng vật lý ngầm được chỉ định bởi cú pháp `STORE AS <store_table_name>`. Mỗi dòng trong bảng phụ này sẽ gồm 2 phần chính:
+   - Mã định danh `NESTED_TABLE_ID` (dùng để map ngược lại dòng thuộc bảng chính).
+   - Giá trị thực tế của phần tử (`COLUMN_VALUE`).
+
+---
+
+# Ví dụ lưu trữ Nested Table
+
+- Bảng `nhan_vien` lưu danh sách kỹ năng:
+
+```sql
+CREATE OR REPLACE TYPE t_skill_list AS TABLE OF VARCHAR2(50);
+/
+
+CREATE TABLE nhan_vien (
+    id NUMBER PRIMARY KEY,
+    ho_ten VARCHAR2(100),
+    kynang t_skill_list
+) NESTED TABLE kynang STORE AS kynang_store_tab;
+
+INSERT INTO nhan_vien VALUES (1, 'Nguyen Van A', t_skill_list('PL/SQL', 'Java'));
+INSERT INTO nhan_vien VALUES (2, 'Tran Thi B', t_skill_list('Docker'));
+
+```
+
+---
+
+# Mô hình dữ liệu vật lý Nested Table
+- **Bảng chính `nhan_vien`:**
+
+| ID | HO_TEN | KYNANG (Chỉ lưu con trỏ SETID) |
+| --- | --- | --- |
+| 1 | Nguyen Van A | `SYS_NC0000300001$` (ID_01) |
+| 2 | Tran Thi B | `SYS_NC0000300002$` (ID_02) |
+
+- **Bảng phụ `kynang_store_tab` (Lưu ẩn bên dưới):**
+
+| NESTED_TABLE_ID (Foreign Key ngầm) | COLUMN_VALUE (Dữ liệu thực tế) |
+| --- | --- |
+| `ID_01` | PL/SQL |
+| `ID_01` | Java |
+| `ID_02` | Docker |
+
+---
+
 # Ví dụ: VARRAY (Mảng kích thước cố định)
 
 <div class="columns">
