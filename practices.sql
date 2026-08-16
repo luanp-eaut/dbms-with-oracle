@@ -1,3 +1,3 @@
-   set transaction read only;
-select *
-  from emp;
+begin
+   dbms_output.put_line('Hello PL/SQL!');
+end;
