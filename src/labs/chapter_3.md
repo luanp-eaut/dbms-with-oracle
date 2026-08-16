@@ -6,7 +6,7 @@
 
 **Bài 1**. Viết một khối PL/SQL ẩn danh in ra dòng chữ: _"Chào mừng đến với PL/SQL"_. Sử dụng `DBMS_OUTPUT`.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 BEGIN
@@ -18,7 +18,7 @@ END;
 
 **Bài 2**. Khai báo một biến `v_empno` kiểu `NUMBER(4)` và gán giá trị 7369. Dùng `SELECT INTO` để lấy tên nhân viên (`ENAME`) và lương (`SAL`) vào hai biến, sau đó in ra.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -38,7 +38,7 @@ END;
 
 **Bài 3**. Khai báo hằng số `C_TAX_RATE` = 0.1. Tính thuế thu nhập (lương \* thuế suất) cho nhân viên có mã 7788 và in ra kết quả.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -59,7 +59,7 @@ END;
 
 **Bài 4**. Sử dụng `%TYPE` để khai báo biến `v_name` cùng kiểu với cột `ENAME` của bảng EMP. Gán giá trị 'KING' và in ra.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -73,7 +73,7 @@ END;
 
 **Bài 5**. Sử dụng `%ROWTYPE` để khai báo biến record `v_emp` lưu toàn bộ dòng của bảng EMP cho nhân viên 7900. In ra `EMPNO`, `ENAME`, `SAL`.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -93,7 +93,7 @@ END;
 
 **Bài 6**. Tự định nghĩa kiểu record `t_emp_summary` gồm các trường: `emp_id`, `full_name`, `monthly_income`. Tạo biến kiểu đó, gán giá trị từ bảng EMP cho nhân viên 7698 và in ra.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -119,7 +119,7 @@ END;
 
 **Bài 7**. Khai báo một Associative Array (chỉ mục số) để lưu danh sách tên nhân viên. Thêm 3 tên bất kỳ và duyệt qua mảng để in ra.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -143,7 +143,7 @@ END;
 
 **Bài 8**. Khai báo một Associative Array với chỉ mục là `VARCHAR2` (tên nhân viên) và giá trị là lương. Điền vào 3 cặp tên-lương, sau đó in lương của một nhân viên cụ thể.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -163,7 +163,7 @@ END;
 
 **Bài 9**. Khai báo một Nested Table chứa các số `NUMBER`. Thêm 5 số, xóa phần tử thứ 3, in ra số lượng và các phần tử còn lại.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -196,7 +196,7 @@ END;
 
 **Bài 10**. Khai báo một VARRAY tối đa 5 phần tử lưu trữ tên phòng ban. Khởi tạo với 3 phòng, thêm một phòng nữa và in toàn bộ.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -222,7 +222,7 @@ END;
 
 **Bài 11**. Viết khối PL/SQL dùng `IF-THEN-ELSE` để kiểm tra lương của nhân viên 7654. Nếu lương > 1500 thì in _"Lương cao"_, ngược lại in _"Lương thấp"_.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -249,7 +249,7 @@ END;
 - < 2000: "Thấp"  
   Áp dụng cho nhân viên 7782.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -276,7 +276,7 @@ END;
 
 **Bài 13**. Dùng `CASE` đơn giản để chuyển đổi mã phòng ban (10,20,30,40) thành tên phòng ban tương ứng (ACCOUNTING, RESEARCH, SALES, OPERATIONS) và in ra cho nhân viên 7900.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -303,7 +303,7 @@ END;
 
 **Bài 14**. Dùng `CASE` tìm kiếm để xếp loại lương tương tự Bài 12, nhưng sử dụng `CASE` trong biểu thức gán.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -328,7 +328,7 @@ END;
 
 **Bài 15**. Viết vòng lặp `LOOP` cơ bản để tính tổng các số từ 1 đến 100 và in ra kết quả.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -349,7 +349,7 @@ END;
 
 **Bài 16**. Viết vòng lặp `WHILE` để tính giai thừa của 6 (6!).
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -369,7 +369,7 @@ END;
 
 **Bài 17**. Viết vòng lặp `FOR` để in ra bảng cửu chương của số 7 (từ 1 đến 10).
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -385,7 +385,7 @@ END;
 
 **Bài 18**. Dùng vòng lặp `FOR` với `REVERSE` để in các số từ 10 đến 1.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 BEGIN
@@ -399,7 +399,7 @@ END;
 
 **Bài 19**. Sử dụng `EXIT WHEN` trong vòng lặp `LOOP` để tính tổng các số chẵn từ 1 đến 50, dừng khi tổng vượt quá 500.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -420,7 +420,7 @@ END;
 
 **Bài 20**. Sử dụng `CONTINUE WHEN` trong vòng lặp `FOR` để in ra các số lẻ từ 1 đến 20 (bỏ qua số chẵn).
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 BEGIN
@@ -439,7 +439,7 @@ END;
 
 **Bài 21**. Viết khối PL/SQL dùng `SELECT INTO` lấy `ENAME`, `SAL`, `DEPTNO` của nhân viên 7844. In ra thông tin. Xử lý ngoại lệ `NO_DATA_FOUND`.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -466,7 +466,7 @@ END;
 
 **Bài 22**. Sử dụng `%ROWTYPE` để lấy toàn bộ dòng của nhân viên 7521 và in ra tất cả các cột.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -495,7 +495,7 @@ END;
 
 **Bài 23**. Viết khối PL/SQL chèn một nhân viên mới vào bảng EMP với thông tin: EMPNO=9001, ENAME='NGUYEN VAN X', JOB='CLERK', SAL=1500, DEPTNO=20. Sử dụng `COMMIT`.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 BEGIN
@@ -511,7 +511,7 @@ END;
 
 **Bài 24**. Viết khối cập nhật lương tăng 10% cho nhân viên có mã 9001 (đã tạo ở bài trước). Kiểm tra số dòng bị ảnh hưởng bằng `SQL%ROWCOUNT`.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -534,7 +534,7 @@ END;
 
 **Bài 25**. Xóa nhân viên 9001 và thông báo xóa thành công hay không dùng `SQL%FOUND`.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -556,7 +556,7 @@ END;
 
 **Bài 26**. Sử dụng biến PL/SQL trong câu lệnh INSERT: khai báo biến cho EMPNO, ENAME, SAL, DEPTNO và thêm nhân viên mới.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -578,7 +578,7 @@ END;
 
 **Bài 27**. Cập nhật lương cho nhân viên bằng biến: khai báo `v_empno` và `v_new_sal`, thực hiện UPDATE và commit.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -602,7 +602,7 @@ END;
 
 **Bài 28**. Thực hiện DELETE tất cả nhân viên thuộc phòng 99 (không có), dùng `SQL%NOTFOUND` để thông báo không có dòng nào bị xóa.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -624,7 +624,7 @@ END;
 
 **Bài 29**. Viết khối PL/SQL chèn một nhân viên, sau đó cập nhật lương của nhân viên đó, rồi xóa nhân viên đó, tất cả trong một transaction. Sau đó rollback để hủy toàn bộ.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
@@ -659,7 +659,7 @@ END;
 
 **Bài 30**. Sử dụng `SELECT INTO` lấy tổng số nhân viên (hàm `COUNT`) vào biến và in ra.
 
-<div style="display: block;">
+<div style="display: none;">
 
 ```sql
 DECLARE
