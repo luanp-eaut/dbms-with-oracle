@@ -2478,6 +2478,34 @@ FROM emp;
 </div>
 </div>
 
+
+---
+
+# Thực thi Procedure/Function
+
+- Trong môi trường **SQL*Plus / SQL Developer**: Dùng lệnh `EXEC` hoặc `SELECT`.
+
+```sql
+-- Gọi không tham số
+EXEC ten_procedure; 
+
+-- Gọi có tham số
+EXEC them_nhan_vien('NV01', 'Nguyen Van A', 5000);
+
+-- Không dùng EXEC cho function trả về giá trị
+-- Dùng SELECT với bảng DUAL
+SELECT tinh_luong_thuc('NV01') FROM DUAL;
+```
+
+- **PL/SQL Anonymous Block** (Khối `BEGIN ... END;`) hoặc Từ một **SP/Function** khác.
+```sql
+BEGIN
+   -- Gọi Procedure có tham số OUT
+   kiem_tra_trang_thai('NV01', v_thong_bao);
+END;
+```
+- **Trong câu lệnh SQL (DML/Query)**: Gọi như một hàm của Oracle (chỉ áp dụng cho hàm).
+
 ---
 
 # So sánh Procedure và Function (Chi tiết)
