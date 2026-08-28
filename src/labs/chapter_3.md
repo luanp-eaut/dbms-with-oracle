@@ -680,23 +680,212 @@ END;
 
 **Bài 31**. Khai báo một cursor tường minh để lấy `EMPNO`, `ENAME`, `SAL` của tất cả nhân viên. Dùng vòng lặp `LOOP` với `FETCH` và `EXIT WHEN` để in ra từng dòng.
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    CURSOR c_emp IS SELECT empno, ename, sal FROM emp;
+    v_empno emp.empno%TYPE;
+    v_ename emp.ename%TYPE;
+    v_sal   emp.sal%TYPE;
+BEGIN
+    OPEN c_emp;
+    LOOP
+        FETCH c_emp INTO v_empno, v_ename, v_sal;
+        EXIT WHEN c_emp%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('MSNV: ' || v_empno || ' - Ten: ' || v_ename || ' - Luong: ' || v_sal);
+    END LOOP;
+    CLOSE c_emp;
+END;
+/
+```
+
+</div>
+
 **Bài 32**. Sử dụng `%ROWTYPE` của cursor để lấy toàn bộ dòng trong cursor (truy vấn `SELECT *`). In ra các cột.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    CURSOR c_emp IS SELECT * FROM emp;
+    v_emp_rec c_emp%ROWTYPE;
+BEGIN
+    OPEN c_emp;
+    LOOP
+        FETCH c_emp INTO v_emp_rec;
+        EXIT WHEN c_emp%NOTFOUND;
+        DBMS_OUTPUT.PUT_LINE('NV: ' || v_emp_rec.ename || ', Job: ' || v_emp_rec.job || ', Sal: ' || v_emp_rec.sal);
+    END LOOP;
+    CLOSE c_emp;
+END;
+/
+```
+
+</div>
 
 **Bài 33**. Sử dụng `CURSOR FOR LOOP` để duyệt qua tất cả nhân viên và in `ENAME`, `JOB`.
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+BEGIN
+    FOR r_emp IN (SELECT ename, job FROM emp) LOOP
+        DBMS_OUTPUT.PUT_LINE(r_emp.ename || ' - ' || r_emp.job);
+    END LOOP;
+END;
+/
+```
+
+</div>
+
 **Bài 34**. Viết cursor có tham số `p_deptno` để lấy nhân viên theo phòng. Gọi cursor cho phòng 20 và 30.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    CURSOR c_emp(p_dept NUMBER) IS 
+        SELECT ename, sal FROM emp WHERE deptno = p_dept;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('--- Phong 20 ---');
+    FOR r IN c_emp(20) LOOP
+        DBMS_OUTPUT.PUT_LINE(r.ename || ': ' || r.sal);
+    END LOOP;
+    
+    DBMS_OUTPUT.PUT_LINE('--- Phong 30 ---');
+    FOR r IN c_emp(30) LOOP
+        DBMS_OUTPUT.PUT_LINE(r.ename || ': ' || r.sal);
+    END LOOP;
+END;
+/
+```
+
+</div>
 
 **Bài 35**. Viết cursor có tham số `p_min_sal` để lấy nhân viên có lương lớn hơn mức đó. Gọi với `p_min_sal = 2000`.
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    CURSOR c_emp(p_min NUMBER) IS 
+        SELECT ename, sal FROM emp WHERE sal > p_min;
+BEGIN
+    FOR r IN c_emp(2000) LOOP
+        DBMS_OUTPUT.PUT_LINE(r.ename || ' - Luong: ' || r.sal);
+    END LOOP;
+END;
+/
+```
+
+</div>
+
 **Bài 36**. Sử dụng thuộc tính `%ROWCOUNT` sau khi duyệt cursor để in ra tổng số nhân viên đã fetch.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    CURSOR c_emp IS SELECT ename FROM emp;
+    v_dummy emp.ename%TYPE;
+BEGIN
+    OPEN c_emp;
+    LOOP
+        FETCH c_emp INTO v_dummy;
+        EXIT WHEN c_emp%NOTFOUND;
+    END LOOP;
+    DBMS_OUTPUT.PUT_LINE('Tong so nhan vien da fetch: ' || c_emp%ROWCOUNT);
+    CLOSE c_emp;
+END;
+/
+```
+
+</div>
 
 **Bài 37**. Khai báo cursor với `FOR UPDATE OF sal` để khóa cột lương. Duyệt cursor và tăng lương 10% cho từng nhân viên, sử dụng `WHERE CURRENT OF`.
 
+<div style="display: block;">
+
+```sql
+DECLARE
+    CURSOR c_emp IS SELECT empno, sal FROM emp FOR UPDATE OF sal;
+BEGIN
+    FOR r IN c_emp LOOP
+        UPDATE emp SET sal = sal * 1.1 WHERE CURRENT OF c_emp;
+    END LOOP;
+    COMMIT; -- Commit để lưu thay đổi (hoặc ROLLBACK nếu chỉ test)
+    ROLLBACK; -- Lệnh này để hoàn tác lại dữ liệu mẫu sau khi chạy thử
+END;
+/
+```
+
+</div>
+
 **Bài 38**. Sử dụng cursor `FOR UPDATE` (không chỉ định cột) và `DELETE WHERE CURRENT OF` để xóa nhân viên có lương < 1000 (nếu có).
+
+<div style="display: block;">
+
+```sql
+DECLARE
+    CURSOR c_emp IS SELECT * FROM emp WHERE sal < 1000 FOR UPDATE;
+BEGIN
+    FOR r IN c_emp LOOP
+        DELETE FROM emp WHERE CURRENT OF c_emp;
+        DBMS_OUTPUT.PUT_LINE('Da xoa: ' || r.ename);
+    END LOOP;
+    COMMIT; 
+    ROLLBACK; -- Hoàn tác
+END;
+/
+```
+
+</div>
 
 **Bài 39**. Viết cursor tham số với giá trị mặc định (DEFAULT) và gọi mà không truyền tham số.
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    CURSOR c_emp(p_sal NUMBER DEFAULT 3000) IS 
+        SELECT ename FROM emp WHERE sal > p_sal;
+BEGIN
+    -- Gọi không truyền tham số, sẽ lấy mặc định 3000
+    FOR r IN c_emp LOOP 
+        DBMS_OUTPUT.PUT_LINE(r.ename);
+    END LOOP;
+END;
+/
+```
+
+</div>
+
 **Bài 40**. Sử dụng cursor để cập nhật cột `COMM` = 500 cho các nhân viên có `JOB = 'SALESMAN'` (dùng `FOR UPDATE` và `WHERE CURRENT OF`).
+
+<div style="display: block;">
+
+```sql
+DECLARE
+    CURSOR c_sales IS SELECT * FROM emp WHERE job = 'SALESMAN' FOR UPDATE OF comm;
+BEGIN
+    FOR r IN c_sales LOOP
+        UPDATE emp SET comm = 500 WHERE CURRENT OF c_sales;
+    END LOOP;
+    COMMIT;
+    ROLLBACK;
+END;
+/
+```
+
+</div>
 
 ---
 
@@ -704,23 +893,207 @@ END;
 
 **Bài 41**. Viết khối `SELECT INTO` lấy tên nhân viên với mã không tồn tại (9999). Bắt ngoại lệ `NO_DATA_FOUND` và in thông báo.
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    v_name emp.ename%TYPE;
+BEGIN
+    SELECT ename INTO v_name FROM emp WHERE empno = 9999;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Loi: Khong tim thay nhan vien voi ma 9999.');
+END;
+/
+```
+
+</div>
+
 **Bài 42**. Viết khối thực hiện phép chia 100/0. Bắt `ZERO_DIVIDE` và in thông báo lỗi.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    v_res NUMBER;
+BEGIN
+    v_res := 100 / 0;
+EXCEPTION
+    WHEN ZERO_DIVIDE THEN
+        DBMS_OUTPUT.PUT_LINE('Loi: Khong the chia cho 0!');
+END;
+/
+```
+
+</div>
 
 **Bài 43**. Thử chèn một nhân viên có `EMPNO` trùng với khóa chính (ví dụ 7369). Bắt `DUP_VAL_ON_INDEX` và xử lý.
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+BEGIN
+    INSERT INTO emp (empno, ename, job) VALUES (7369, 'TEST', 'CLERK');
+EXCEPTION
+    WHEN DUP_VAL_ON_INDEX THEN
+        DBMS_OUTPUT.PUT_LINE('Loi: Ma nhan vien 7369 da ton tai (Trung khoa chinh).');
+END;
+/
+```
+
+</div>
+
 **Bài 44**. Khai báo ngoại lệ tự tạo `e_high_salary`. Trong khối, lấy lương của 7788, nếu > 5000 thì `RAISE e_high_salary` và bắt ngoại lệ đó.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    v_sal emp.sal%TYPE;
+    e_high_salary EXCEPTION;
+BEGIN
+    SELECT sal INTO v_sal FROM emp WHERE empno = 7788;
+    IF v_sal > 5000 THEN
+        RAISE e_high_salary;
+    END IF;
+    DBMS_OUTPUT.PUT_LINE('Luong hop le: ' || v_sal);
+EXCEPTION
+    WHEN e_high_salary THEN
+        DBMS_OUTPUT.PUT_LINE('Loi: Luong qua cao (> 5000)!');
+END;
+/
+```
+
+</div>
 
 **Bài 45**. Sử dụng `RAISE_APPLICATION_ERROR` với mã -20001 và thông báo _"Lương không được âm"_ khi phát hiện lương < 0 (giả sử lấy từ bảng).
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    v_sal emp.sal%TYPE;
+BEGIN
+    SELECT sal INTO v_sal FROM emp WHERE empno = 7369;
+    IF v_sal < 0 THEN
+        RAISE_APPLICATION_ERROR(-20001, 'Lương không được âm');
+    END IF;
+    DBMS_OUTPUT.PUT_LINE('Luong: ' || v_sal);
+END;
+/
+```
+
+</div>
+
 **Bài 46**. Kết hợp `RAISE` và `RAISE_APPLICATION_ERROR`: bắt ngoại lệ tự tạo, sau đó ném lại bằng `RAISE_APPLICATION_ERROR` với mã tùy chỉnh.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    e_custom EXCEPTION;
+BEGIN
+    IF 1 = 1 THEN -- Giả sử điều kiện lỗi
+        RAISE e_custom;
+    END IF;
+EXCEPTION
+    WHEN e_custom THEN
+        RAISE_APPLICATION_ERROR(-20002, 'Phat hien loi nghiem trong: ' || SQLERRM);
+END;
+/
+```
+
+</div>
 
 **Bài 47**. Viết khối có ngoại lệ `WHEN OTHERS` để bắt tất cả lỗi và in ra `SQLERRM`.
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    v_res NUMBER;
+BEGIN
+    v_res := 10 / 0;
+EXCEPTION
+    WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('Ma loi: ' || SQLCODE);
+        DBMS_OUTPUT.PUT_LINE('Chi tiet: ' || SQLERRM);
+END;
+/
+```
+
+</div>
+
 **Bài 48**. Sử dụng `PRAGMA EXCEPTION_INIT` để gán tên cho một lỗi Oracle cụ thể (ví dụ ORA-01403) và bắt nó.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    e_no_data EXCEPTION;
+    PRAGMA EXCEPTION_INIT(e_no_data, -1403); -- ORA-01403: no data found
+    v_name emp.ename%TYPE;
+BEGIN
+    SELECT ename INTO v_name FROM emp WHERE empno = 9999;
+EXCEPTION
+    WHEN e_no_data THEN
+        DBMS_OUTPUT.PUT_LINE('Bat loi ORA-01403 bang PRAGMA EXCEPTION_INIT!');
+END;
+/
+```
+
+</div>
 
 **Bài 49**. Viết khối lồng nhau (khối cha và khối con). Trong khối con, ném ngoại lệ `NO_DATA_FOUND` và không xử lý, để nó lan truyền lên khối cha và bắt ở đó.
 
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+BEGIN -- Khối cha
+    DBMS_OUTPUT.PUT_LINE('Bat dau khoi cha...');
+    BEGIN -- Khối con
+        DECLARE
+            v_name emp.ename%TYPE;
+        BEGIN
+            SELECT ename INTO v_name FROM emp WHERE empno = 9999;
+        END;
+    END;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Khoi cha bat duoc NO_DATA_FOUND tu khoi con!');
+END;
+/
+```
+
+</div>
+
 **Bài 50**. Trong khối PL/SQL, cập nhật lương của nhân viên 7788. Nếu có lỗi, rollback; nếu thành công, commit. Sử dụng `EXCEPTION` để rollback khi có lỗi.
+
+<div style="display: block;">
+
+```sql
+BEGIN
+    UPDATE emp SET sal = sal + 10 WHERE empno = 7788;
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Cap nhat thanh cong!');
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        DBMS_OUTPUT.PUT_LINE('Co loi, da rollback: ' || SQLERRM);
+END;
+/
+```
+
+</div>
 
 ---
 
@@ -728,23 +1101,237 @@ END;
 
 **Bài 51**. Tạo một stored procedure đơn giản `proc_hello` in ra "Hello from Procedure". Gọi procedure đó.
 
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE PROCEDURE proc_hello IS
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Hello from Procedure');
+END;
+/
+-- Goi procedure
+EXEC proc_hello;
+```
+
+</div>
+
 **Bài 52**. Tạo procedure `increase_salary` nhận `p_empno` và `p_percent`, tăng lương theo tỷ lệ và commit. Xử lý ngoại lệ nếu không tìm thấy nhân viên.
+
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE PROCEDURE increase_salary(p_empno NUMBER, p_percent NUMBER) IS
+    e_not_found EXCEPTION;
+BEGIN
+    UPDATE emp SET sal = sal * (1 + p_percent/100) WHERE empno = p_empno;
+    IF SQL%NOTFOUND THEN
+        RAISE e_not_found;
+    END IF;
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Da tang luong cho NV ' || p_empno);
+EXCEPTION
+    WHEN e_not_found THEN
+        DBMS_OUTPUT.PUT_LINE('Khong tim thay nhan vien ' || p_empno);
+    WHEN OTHERS THEN
+        ROLLBACK;
+        DBMS_OUTPUT.PUT_LINE('Loi: ' || SQLERRM);
+END;
+/
+EXEC increase_salary(7788, 10);
+```
+
+</div>
 
 **Bài 53**. Tạo procedure `get_emp_info` có tham số `IN` là `p_empno` và ba tham số `OUT` là `p_ename`, `p_sal`, `p_deptno`. Gọi và in ra kết quả.
 
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE PROCEDURE get_emp_info(
+    p_empno IN NUMBER, 
+    p_ename OUT VARCHAR2, 
+    p_sal OUT NUMBER, 
+    p_deptno OUT NUMBER
+) IS
+BEGIN
+    SELECT ename, sal, deptno INTO p_ename, p_sal, p_deptno 
+    FROM emp WHERE empno = p_empno;
+END;
+/
+
+-- Goi va in ket qua
+SET SERVEROUTPUT ON;
+DECLARE
+    v_name VARCHAR2(50); v_sal NUMBER; v_dept NUMBER;
+BEGIN
+    get_emp_info(7788, v_name, v_sal, v_dept);
+    DBMS_OUTPUT.PUT_LINE('Ten: ' || v_name || ', Luong: ' || v_sal || ', Phong: ' || v_dept);
+END;
+/
+```
+
+</div>
+
 **Bài 54**. Tạo procedure `swap_numbers` có hai tham số `IN OUT` để hoán đổi giá trị của hai số. Gọi và kiểm tra.
+
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE PROCEDURE swap_numbers(p1 IN OUT NUMBER, p2 IN OUT NUMBER) IS
+    v_temp NUMBER;
+BEGIN
+    v_temp := p1;
+    p1 := p2;
+    p2 := v_temp;
+END;
+/
+
+SET SERVEROUTPUT ON;
+DECLARE
+    a NUMBER := 10; b NUMBER := 20;
+BEGIN
+    DBMS_OUTPUT.PUT_LINE('Truoc: a=' || a || ', b=' || b);
+    swap_numbers(a, b);
+    DBMS_OUTPUT.PUT_LINE('Sau: a=' || a || ', b=' || b);
+END;
+/
+```
+
+</div>
 
 **Bài 55**. Tạo function `calc_annual_salary` nhận `p_empno`, trả về lương năm (lương \*12 + hoa hồng). Sử dụng function trong câu lệnh SELECT.
 
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE FUNCTION calc_annual_salary(p_empno NUMBER) RETURN NUMBER IS
+    v_annual NUMBER;
+BEGIN
+    SELECT (sal * 12) + NVL(comm, 0) INTO v_annual FROM emp WHERE empno = p_empno;
+    RETURN v_annual;
+END;
+/
+-- Su dung trong SELECT
+SELECT empno, ename, calc_annual_salary(empno) AS annual_sal FROM emp WHERE empno = 7788;
+```
+
+</div>
+
 **Bài 56**. Tạo function `get_dept_name` nhận `p_deptno` trả về tên phòng. Nếu không có thì trả về NULL. Gọi trong SELECT.
+
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE FUNCTION get_dept_name(p_deptno NUMBER) RETURN VARCHAR2 IS
+    v_dname dept.dname%TYPE;
+BEGIN
+    SELECT dname INTO v_dname FROM dept WHERE deptno = p_deptno;
+    RETURN v_dname;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN RETURN NULL;
+END;
+/
+SELECT empno, ename, get_dept_name(deptno) AS dept_name FROM emp;
+```
+
+</div>
 
 **Bài 57**. Tạo package `emp_pkg` với spec có: biến public `g_default_dept` (NUMBER), procedure `add_emp`, function `get_annual`. Cài đặt package body.
 
+<div style="display: block;">
+
+```sql
+-- Spec
+CREATE OR REPLACE PACKAGE emp_pkg IS
+    g_default_dept NUMBER := 10;
+    PROCEDURE add_emp(p_empno NUMBER, p_ename VARCHAR2, p_sal NUMBER);
+    FUNCTION get_annual(p_empno NUMBER) RETURN NUMBER;
+END emp_pkg;
+/
+
+-- Body
+CREATE OR REPLACE PACKAGE BODY emp_pkg IS
+    PROCEDURE add_emp(p_empno NUMBER, p_ename VARCHAR2, p_sal NUMBER) IS
+    BEGIN
+        INSERT INTO emp(empno, ename, sal, deptno) VALUES(p_empno, p_ename, p_sal, g_default_dept);
+        COMMIT;
+    END;
+    
+    FUNCTION get_annual(p_empno NUMBER) RETURN NUMBER IS
+        v_annual NUMBER;
+    BEGIN
+        SELECT (sal*12) + NVL(comm,0) INTO v_annual FROM emp WHERE empno = p_empno;
+        RETURN v_annual;
+    END;
+END emp_pkg;
+/
+
+```
+
+</div>
+
 **Bài 58**. Sử dụng package ở bài 57, gọi procedure thêm nhân viên và function tính lương năm.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+BEGIN
+    emp_pkg.add_emp(9999, 'NEWGUY', 2000);
+    DBMS_OUTPUT.PUT_LINE('Luong nam: ' || emp_pkg.get_annual(9999));
+    ROLLBACK; -- Huy insert de gi nguyen du lieu mau
+END;
+/
+```
+
+</div>
 
 **Bài 59**. Tạo trigger `trg_before_insert_emp` tự động chuyển `ENAME` thành chữ hoa, gán `HIREDATE` = SYSDATE nếu NULL khi INSERT. Kiểm tra.
 
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE TRIGGER trg_before_insert_emp
+BEFORE INSERT ON emp
+FOR EACH ROW
+BEGIN
+    :NEW.ename := UPPER(:NEW.ename);
+    IF :NEW.hiredate IS NULL THEN
+        :NEW.hiredate := SYSDATE;
+    END IF;
+END;
+/
+-- Kiem tra: INSERT INTO emp(empno, ename, job) VALUES (8888, 'test user', 'CLERK');
+```
+
+</div>
+
 **Bài 60**. Tạo trigger `trg_after_delete_emp` ghi log vào bảng `emp_audit` (tạo sẵn) với thông tin nhân viên bị xóa. Xóa một nhân viên và kiểm tra log.
+
+<div style="display: block;">
+
+```sql
+-- Bảng lưu log khi xóa nhân viên
+CREATE TABLE emp_audit (
+    audit_id NUMBER GENERATED BY DEFAULT AS IDENTITY,
+    empno NUMBER,
+    ename VARCHAR2(50),
+    action VARCHAR2(50),
+    action_date DATE DEFAULT SYSDATE
+);
+
+CREATE OR REPLACE TRIGGER trg_after_delete_emp
+AFTER DELETE ON emp
+FOR EACH ROW
+BEGIN
+    INSERT INTO emp_audit(empno, ename, action) 
+    VALUES (:OLD.empno, :OLD.ename, 'DELETED');
+END;
+/
+-- Xoa thu va kiem tra: DELETE FROM emp WHERE empno = 9999; SELECT * FROM emp_audit;
+```
+
+</div>
 
 ---
 
@@ -753,11 +1340,67 @@ END;
 **Bài 61. Cập nhật lương hàng loạt với cursor**  
 Viết procedure `bulk_salary_update` sử dụng cursor để tăng lương 5% cho tất cả nhân viên phòng 30, đồng thời cập nhật cột `COMM` = 200 cho các nhân viên đó. Xử lý ngoại lệ và commit.
 
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE PROCEDURE bulk_salary_update IS
+    CURSOR c_emp IS SELECT empno FROM emp WHERE deptno = 30 FOR UPDATE;
+BEGIN
+    FOR r IN c_emp LOOP
+        UPDATE emp SET sal = sal * 1.05, comm = 200 WHERE CURRENT OF c_emp;
+    END LOOP;
+    COMMIT;
+    DBMS_OUTPUT.PUT_LINE('Da cap nhat luong cho phong 30');
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        DBMS_OUTPUT.PUT_LINE('Loi: ' || SQLERRM);
+END;
+/
+```
+
+</div>
+
 **Bài 62. Kiểm tra ràng buộc bằng trigger**  
 Tạo trigger `trg_check_sal` trước khi UPDATE hoặc INSERT trên EMP, ngăn chặn việc đặt `SAL` < 500. Dùng `RAISE_APPLICATION_ERROR`.
 
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE TRIGGER trg_check_sal
+BEFORE INSERT OR UPDATE OF sal ON emp
+FOR EACH ROW
+BEGIN
+    IF :NEW.sal < 500 THEN
+        RAISE_APPLICATION_ERROR(-20003, 'Muc luong toi thieu phai la 500');
+    END IF;
+END;
+/
+```
+
+</div>
+
 **Bài 63. Hàm tính lương thực nhận**  
 Tạo function `net_salary` nhận `p_empno`, tính lương sau thuế (giả sử thuế 10% trên lương, nếu lương > 3000). Sử dụng trong SELECT.
+
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE FUNCTION net_salary(p_empno NUMBER) RETURN NUMBER IS
+    v_sal emp.sal%TYPE;
+BEGIN
+    SELECT sal INTO v_sal FROM emp WHERE empno = p_empno;
+    IF v_sal > 3000 THEN
+        RETURN v_sal * 0.9; -- Giam 10% thue
+    ELSE
+        RETURN v_sal;
+    END IF;
+END;
+/
+SELECT ename, sal, net_salary(empno) AS net_sal FROM emp;
+```
+
+</div>
 
 **Bài 64. Package quản lý nhân viên**  
 Xây dựng package `hr_admin` với:
@@ -765,6 +1408,61 @@ Xây dựng package `hr_admin` với:
 - Procedure `fire_emp(p_empno)` xóa nhân viên và ghi log vào bảng `emp_audit`.
 - Function `count_emp(p_deptno)` trả về số nhân viên thuộc phòng.
 - Trigger tự động cập nhật số lượng khi thêm/xóa.
+
+<div style="display: block;">
+
+```sql
+-- Bảng lưu log khi xóa nhân viên
+CREATE TABLE emp_audit (
+    audit_id NUMBER GENERATED BY DEFAULT AS IDENTITY,
+    empno NUMBER,
+    ename VARCHAR2(50),
+    action VARCHAR2(50),
+    action_date DATE DEFAULT SYSDATE
+);
+
+ALTER TABLE dept ADD emp_count NUMBER DEFAULT 0;
+UPDATE dept d SET emp_count = (SELECT COUNT(*) FROM emp e WHERE e.deptno = d.deptno);
+
+CREATE OR REPLACE PACKAGE hr_admin IS
+    PROCEDURE fire_emp(p_empno NUMBER);
+    FUNCTION count_emp(p_deptno NUMBER) RETURN NUMBER;
+END hr_admin;
+/
+CREATE OR REPLACE PACKAGE BODY hr_admin IS
+    PROCEDURE fire_emp(p_empno NUMBER) IS
+        v_ename emp.ename%TYPE;
+    BEGIN
+        SELECT ename INTO v_ename FROM emp WHERE empno = p_empno;
+        INSERT INTO emp_audit(empno, ename, action) VALUES(p_empno, v_ename, 'FIRED');
+        DELETE FROM emp WHERE empno = p_empno;
+        COMMIT;
+    END;
+    
+    FUNCTION count_emp(p_deptno NUMBER) RETURN NUMBER IS
+        v_count NUMBER;
+    BEGIN
+        SELECT COUNT(*) INTO v_count FROM emp WHERE deptno = p_deptno;
+        RETURN v_count;
+    END;
+END hr_admin;
+/
+
+-- Trigger tu dong cap nhat so luong
+CREATE OR REPLACE TRIGGER trg_update_emp_count
+AFTER INSERT OR DELETE ON emp
+FOR EACH ROW
+BEGIN
+    IF INSERTING THEN
+        UPDATE dept SET emp_count = NVL(emp_count, 0) + 1 WHERE deptno = :NEW.deptno;
+    ELSIF DELETING THEN
+        UPDATE dept SET emp_count = NVL(emp_count, 1) - 1 WHERE deptno = :OLD.deptno;
+    END IF;
+END;
+/
+```
+
+</div>
 
 **Bài 65. Giao dịch chuyển phòng ban**  
 Viết procedure `transfer_dept` nhận `p_empno`, `p_new_deptno`, thực hiện:
@@ -775,17 +1473,163 @@ Viết procedure `transfer_dept` nhận `p_empno`, `p_new_deptno`, thực hiện
 - Ghi log vào bảng `emp_transfer_log` (tạo sẵn).
 - Nếu có lỗi, rollback.
 
+<div style="display: block;">
+
+```sql
+-- Bảng lưu log chuyển phòng ban
+CREATE TABLE emp_transfer_log (
+    log_id NUMBER GENERATED BY DEFAULT AS IDENTITY,
+    empno NUMBER,
+    old_deptno NUMBER,
+    new_deptno NUMBER,
+    transfer_date DATE DEFAULT SYSDATE
+);
+
+CREATE OR REPLACE PROCEDURE transfer_dept(p_empno NUMBER, p_new_deptno NUMBER) IS
+    v_old_dept emp.deptno%TYPE;
+    e_emp_not_found EXCEPTION;
+    e_dept_not_found EXCEPTION;
+BEGIN
+    -- Kiem tra NV
+    SELECT deptno INTO v_old_dept FROM emp WHERE empno = p_empno;
+    -- Kiem tra Phong
+    DECLARE v_dummy NUMBER;
+    BEGIN
+        SELECT 1 INTO v_dummy FROM dept WHERE deptno = p_new_deptno;
+    EXCEPTION
+        WHEN NO_DATA_FOUND THEN RAISE e_dept_not_found;
+    END;
+    
+    UPDATE emp SET deptno = p_new_deptno WHERE empno = p_empno;
+    INSERT INTO emp_transfer_log(empno, old_deptno, new_deptno) 
+    VALUES (p_empno, v_old_dept, p_new_deptno);
+    COMMIT;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN RAISE e_emp_not_found;
+    WHEN e_emp_not_found THEN
+        ROLLBACK; DBMS_OUTPUT.PUT_LINE('Khong tim thay NV');
+    WHEN e_dept_not_found THEN
+        ROLLBACK; DBMS_OUTPUT.PUT_LINE('Khong tim thay Phong moi');
+    WHEN OTHERS THEN
+        ROLLBACK; DBMS_OUTPUT.PUT_LINE('Loi: ' || SQLERRM);
+END;
+/
+```
+
+</div>
+
 **Bài 66. Sử dụng cursor tham số và exception**  
 Viết procedure `print_emp_by_dept(p_deptno)` dùng cursor có tham số để in danh sách nhân viên. Nếu phòng không có nhân viên, thông báo "Phòng trống".
+
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE PROCEDURE print_emp_by_dept(p_deptno NUMBER) IS
+    CURSOR c_emp IS SELECT ename FROM emp WHERE deptno = p_deptno;
+    v_count NUMBER := 0;
+BEGIN
+    FOR r IN c_emp LOOP
+        DBMS_OUTPUT.PUT_LINE(' - ' || r.ename);
+        v_count := v_count + 1;
+    END LOOP;
+    
+    IF v_count = 0 THEN
+        DBMS_OUTPUT.PUT_LINE('Phong trong');
+    END IF;
+END;
+/
+EXEC print_emp_by_dept(99); -- Phong khong ton tai / trong
+```
+
+</div>
 
 **Bài 67. Trigger ngăn chặn giảm lương**  
 Tạo trigger `trg_no_sal_decrease` trên EMP, chỉ cho phép UPDATE SAL nếu giá trị mới >= giá trị cũ. Nếu vi phạm, báo lỗi.
 
+<div style="display: block;">
+
+```sql
+CREATE OR REPLACE TRIGGER trg_no_sal_decrease
+BEFORE UPDATE OF sal ON emp
+FOR EACH ROW
+BEGIN
+    IF :NEW.sal < :OLD.sal THEN
+        RAISE_APPLICATION_ERROR(-20004, 'Khong duoc phep giam luong nhan vien');
+    END IF;
+END;
+/
+```
+
+</div>
+
 **Bài 68. Tự động sinh mã nhân viên**  
 Tạo sequence `seq_empno` bắt đầu 9000. Tạo trigger BEFORE INSERT trên EMP để tự động gán `EMPNO` từ sequence nếu `:NEW.EMPNO` là NULL. Kiểm tra bằng cách INSERT không có EMPNO.
 
+<div style="display: block;">
+
+```sql
+CREATE SEQUENCE seq_empno START WITH 9000 INCREMENT BY 1;
+
+CREATE OR REPLACE TRIGGER trg_auto_empno
+BEFORE INSERT ON emp
+FOR EACH ROW
+BEGIN
+    IF :NEW.empno IS NULL THEN
+        :NEW.empno := seq_empno.NEXTVAL;
+    END IF;
+END;
+/
+-- Kiem tra: INSERT INTO emp(ename, job, sal, deptno) VALUES ('AUTOUSER', 'CLERK', 1500, 10);
+```
+
+</div>
+
 **Bài 69. Procedure thêm dự án và phân công**  
 Viết procedure `add_project_assignment` nhận thông tin dự án (PROJ_ID, PROJ_NAME, ...) và phân công nhân viên (EMPNO, ROLE, HOURS_WEEK) vào dự án đó. Nếu dự án đã tồn tại thì chỉ thêm phân công. Sử dụng transaction và rollback nếu lỗi.
+
+<div style="display: block;">
+
+```sql
+
+-- Bảng Dự án và Phân công
+CREATE TABLE project (
+    proj_id NUMBER PRIMARY KEY,
+    proj_name VARCHAR2(100)
+);
+CREATE TABLE project_assignment (
+    assign_id NUMBER GENERATED BY DEFAULT AS IDENTITY,
+    proj_id NUMBER REFERENCES project(proj_id),
+    empno NUMBER,
+    role VARCHAR2(50),
+    hours_week NUMBER
+);
+
+CREATE OR REPLACE PROCEDURE add_project_assignment(
+    p_proj_id NUMBER, p_proj_name VARCHAR2,
+    p_empno NUMBER, p_role VARCHAR2, p_hours NUMBER
+) IS
+    v_proj_exists NUMBER;
+BEGIN
+    -- Kiem tra du an, neu chua co thi them
+    SELECT COUNT(*) INTO v_proj_exists FROM project WHERE proj_id = p_proj_id;
+    IF v_proj_exists = 0 THEN
+        INSERT INTO project(proj_id, proj_name) VALUES (p_proj_id, p_proj_name);
+    END IF;
+    
+    -- Phan cong
+    INSERT INTO project_assignment(proj_id, empno, role, hours_week)
+    VALUES (p_proj_id, p_empno, p_role, p_hours);
+    
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        ROLLBACK;
+        DBMS_OUTPUT.PUT_LINE('Loi: ' || SQLERRM);
+END;
+/
+```
+
+</div>
 
 **Bài 70. Báo cáo tổng hợp bằng PL/SQL**  
 Viết một khối PL/SQL sử dụng cursor để lấy danh sách các phòng ban, và với mỗi phòng, lấy danh sách nhân viên. In ra báo cáo dạng:
@@ -798,3 +1642,42 @@ Tổng lương phòng: ...
 ```
 
 Xử lý ngoại lệ khi không có dữ liệu.
+
+<div style="display: block;">
+
+```sql
+SET SERVEROUTPUT ON;
+DECLARE
+    CURSOR c_dept IS SELECT deptno, dname FROM dept ORDER BY deptno;
+    CURSOR c_emp(p_deptno NUMBER) IS 
+        SELECT ename, sal FROM emp WHERE deptno = p_deptno ORDER BY ename;
+    
+    v_total_sal NUMBER;
+    v_has_emp BOOLEAN;
+BEGIN
+    FOR r_dept IN c_dept LOOP
+        DBMS_OUTPUT.PUT_LINE('Phong ' || r_dept.dname || ' (' || r_dept.deptno || ')');
+        v_total_sal := 0;
+        v_has_emp := FALSE;
+        
+        FOR r_emp IN c_emp(r_dept.deptno) LOOP
+            DBMS_OUTPUT.PUT_LINE('- ' || r_emp.ename || ': ' || r_emp.sal);
+            v_total_sal := v_total_sal + r_emp.sal;
+            v_has_emp := TRUE;
+        END LOOP;
+        
+        IF v_has_emp THEN
+            DBMS_OUTPUT.PUT_LINE('Tong luong phong: ' || v_total_sal);
+        ELSE
+            DBMS_OUTPUT.PUT_LINE('(Khong co nhan vien)');
+        END IF;
+        DBMS_OUTPUT.PUT_LINE('------------------------');
+    END LOOP;
+EXCEPTION
+    WHEN NO_DATA_FOUND THEN
+        DBMS_OUTPUT.PUT_LINE('Khong co du lieu phong ban.');
+END;
+/
+```
+
+</div>
