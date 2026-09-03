@@ -45,7 +45,7 @@ transition: zoom
 
 - Oracle Database là hệ quản trị cơ sở dữ liệu quan hệ (RDBMS) do Oracle phát triển.
 - Kiến trúc bao gồm hai thành phần chính: **Instance** và **Database**.
-- Instance là tập các tiến trình (process) và vùng nhớ (memory) để quản lý dữ liệu.
+- **Instance** là tập các tiến trình (process) và vùng nhớ (memory) để quản lý dữ liệu.
 
 </div>
 <div>
@@ -56,7 +56,7 @@ transition: zoom
 </div>
 </div>
 
-- Database là tập các file vật lý lưu trữ dữ liệu thực tế.
+- **Database** là tập các file vật lý lưu trữ dữ liệu thực tế.
 - Kiến trúc Multitenant (từ 12c) cho phép nhiều PDB (Pluggable Database) bên trong một CDB (Container Database).
 - Hiểu rõ kiến trúc giúp quản trị hiệu quả, tối ưu hiệu năng và xử lý sự cố.
 
@@ -81,6 +81,118 @@ transition: zoom
 
 - Mỗi instance chỉ kết nối với một database (trong kiến trúc non-CDB) hoặc có thể kết nối với một CDB (trong kiến trúc Multitenant).
 - Một database có thể được gắn với nhiều instance (RAC - Real Application Clusters) để tăng khả năng sẵn sàng.
+
+---
+
+# Các tiến trình ngầm (background processes)
+
+- **Định nghĩa:** Tiến trình ngầm là các tiến trình được tự động tạo ra khi khởi tạo một instance Oracle. Chúng hoạt động độc lập với các phiên người dùng, thực hiện các tác vụ nền để duy trì, vận hành và bảo vệ cơ sở dữ liệu.
+- **Vai trò:** Đảm bảo dữ liệu được ghi xuống đĩa an toàn, phục hồi khi có sự cố, tối ưu hiệu suất và quản lý tài nguyên.
+
+<div class="columns">
+<div class="col-3">
+
+- **Phân loại:** Chia làm 3 nhóm chính:
+    1.  **Tiến trình bắt buộc (Mandatory):** Luôn chạy trong mọi cấu hình cơ bản.
+    2.  **Tiến trình tùy chọn (Optional):** Chỉ xuất hiện khi kích hoạt các tính năng đặc biệt.
+    3.  **Tiến trình phụ (Slave Processes):** Đại diện cho các tiến trình khác thực hiện công việc (ví dụ: Dnnn, Snnn).
+</div>
+<div class="col-2">
+
+![](./images/processes.png)
+
+</div>
+</div>
+
+---
+<!--_class: text-2xs-->
+
+# Nhóm tiến trình bắt buộc (Core Mandatory Processes)
+
+| Process | Name | Functionality |
+| :--- | :--- | :--- |
+| **DBWn** | Database Writer Process | Ghi các khối dữ liệu "bẩn" (dirty) từ **Database Buffer Cache** xuống các file dữ liệu trên đĩa. |
+| **LGWR** | Log Writer Process | Ghi các bản ghi **Redo** từ **Redo Log Buffer** xuống các file **Online Redo Log**. |
+| **CKPT** | Checkpoint Process | Cập nhật thông tin **Checkpoint** vào file điều khiển và header của file dữ liệu; ra lệnh cho **DBWn** ghi dữ liệu. |
+| **SMON** | System Monitor Process | Thực hiện **Instance Recovery** khi khởi động lại sau sự cố; dọn dẹp các segment tạm thời và quản lý **Undo** tablespace. |
+| **PMON** | Process Monitor Process | Giám sát các tiến trình người dùng; dọn dẹp tài nguyên khi một tiến trình bị lỗi hoặc ngắt kết nối đột ngột. |
+| **LREG** | Listener Registration Process | Đăng ký thông tin về **Instance** và các dịch vụ với **Listener** của Oracle. |
+
+---
+<!--_class: text-xs-->
+
+# Nhóm tiến trình bắt buộc (tiếp)
+
+| Process | Name | Functionality |
+| :--- | :--- | :--- |
+| **RECO** | Recoverer Process | Tự động khôi phục các giao dịch **phân tán (Distributed Transactions)** bị treo do lỗi mạng hoặc hệ thống. |
+| **PMAN** | Process Manager Process | Quản lý vòng đời của các tiến trình khác như **Dispatcher**, **Shared Server**, và các tiến trình **Job Queue**. |
+| **MMON** | Manageability Monitor Process | Thu thập số liệu để xây dựng báo cáo **AWR (Automatic Workload Repository)** và phát cảnh báo khi các ngưỡng hiệu suất bị vi phạm. |
+| **MMNL** | Manageability Monitor Lite Process | Ghi dữ liệu từ **ASH (Active Session History)** Buffer xuống đĩa để phục vụ phân tích hiệu suất. |
+| **MMAN** | Memory Manager Process | Tự động điều chỉnh kích thước các thành phần trong **SGA** dựa trên nhu cầu và tải của hệ thống. |
+
+---
+<!--_class: text-2xs-->
+
+# Nhóm tiến trình tùy chọn (Optional Processes)
+
+| Process | Name | Functionality | Activated |
+| :--- | :--- | :--- | :--- |
+| **ARCn** | Archiver Process | Sao lưu các file **Online Redo Log** đã đầy sang **Archived Redo Log**. | Chế độ **ARCHIVELOG** được bật. |
+| **CJQ0 / Jnnn** | Job Queue Processes | Thực thi các tác vụ được lên lịch bởi `DBMS_JOB` hoặc `DBMS_SCHEDULER`. | Có các job cần chạy. |
+| **ARB0** | ASM Rebalance Process | Thực hiện cân bằng lại (rebalance) các extent dữ liệu trong **ASM Disk Group**. | Sử dụng **ASM** và có thay đổi về disk group. |
+| **RVWR** | Recovery Writer Process | Ghi các khối dữ liệu "tiền ảnh" (pre-image) vào **Flashback Logs** để hỗ trợ tính năng **Flashback Database**. | Tính năng **Flashback Database** được bật. |
+| **FBDA** | Flashback Data Archive Process | Lưu trữ dữ liệu lịch sử cho bảng được kích hoạt **Flashback Data Archive**. | Có bảng sử dụng tính năng này. |
+| **SMCO** | Space Management Coordinator | Phối hợp các tiến trình (Wxxx) để thực hiện các tác vụ quản lý không gian nâng cao. | Kích hoạt các tính năng quản lý không gian mới. |
+
+---
+
+# System Global Area (SGA)
+
+- **Định nghĩa:** SGA (System Global Area) là một nhóm các cấu trúc bộ nhớ dùng chung, chứa dữ liệu và thông tin điều khiển của một instance Oracle Database. Đây là thành phần bộ nhớ cốt lõi của instance.
+
+<div class="columns">
+<div>
+
+- **Đặc điểm:** 
+    - Được chia sẻ bởi **tất cả các server process và background process**.
+    - Được cấp phát khi instance khởi động và giải phóng khi instance tắt.
+- **Vai trò:** Lưu trữ dữ liệu được truy cập thường xuyên (như data block), mã SQL đã phân tích, thông tin điều khiển và các cấu trúc chia sẻ khác để tối ưu hiệu suất và giảm thiểu I/O đĩa.
+
+</div>
+<div>
+
+![](./images/sga.png)
+
+</div>
+</div>
+
+---
+
+# Các thành phần bắt buộc (Core Components)
+
+- Các thành phần không thể thiếu, luôn tồn tại trong SGA.
+
+| Area | Name | Functionality |
+| :--- | :--- | :--- |
+| **Database Buffer Cache** | Database Buffer Cache | Lưu trữ bản sao của các **data block** được đọc từ file dữ liệu. Giúp truy cập dữ liệu nhanh hơn và giảm I/O đĩa. Được quản lý bởi cơ chế **LRU (Least Recently Used)**. |
+| **Shared Pool** | Shared Pool | Lưu trữ các cấu trúc có thể chia sẻ giữa các user, bao gồm: **Library Cache** (mã SQL/PLSQL đã phân tích, execution plans) và **Data Dictionary Cache** (thông tin metadata về đối tượng). |
+| **Redo Log Buffer** | Redo Log Buffer | Vùng đệm **dạng vòng (circular buffer)** lưu các **redo entry** (change vectors) ghi lại mọi thay đổi dữ liệu. Dùng để **phục hồi database** khi cần thiết. |
+
+---
+<!--_class: text-2xs-->
+
+# Các thành phần tùy chọn (Optional Components)
+
+- Chỉ được cấp phát khi kích hoạt các tính năng hoặc cấu hình cụ thể.
+
+| Area | Name | Functionality | Activated |
+| :--- | :--- | :--- | :--- |
+| **Large Pool** | Large Pool | Cấp phát bộ nhớ lớn cho các tác vụ đặc biệt như: **UGA cho Shared Server**, **message buffer cho Parallel Execution**, **buffer cho RMAN I/O**. | Sử dụng Shared Server, Parallel Execution, hoặc RMAN. |
+| **Java Pool** | Java Pool | Hỗ trợ bộ nhớ cho **Java Virtual Machine (JVM)** trong database, dùng để chạy các stored procedure, trigger viết bằng Java. | Sử dụng các tính năng Java trong database. |
+| **Streams Pool** | Streams Pool | Hỗ trợ các tính năng **Oracle Streams** và **Advanced Queuing (AQ)**. | Kích hoạt Streams hoặc AQ. |
+| **In-Memory Area** | In-Memory Area | Lưu trữ dữ liệu dưới **dạng cột (columnar format)** để tăng tốc phân tích, báo cáo. | Bật tính năng **Oracle Database In-Memory**. |
+| **Memoptimize Pool** | Memoptimize Pool | Tối ưu truy vấn dựa trên khóa (key-based queries) với hiệu năng và khả năng mở rộng cao. | Bật tính năng **Memoptimized Rowstore**. |
 
 ---
 
