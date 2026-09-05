@@ -1354,7 +1354,6 @@ SELECT table_name FROM user_tables;
 SELECT table_name FROM all_tables WHERE owner='SCOTT';
 SELECT table_name FROM dba_tables;
 ```
-
 ---
 
 # Dynamic Performance Views - V$ và GV$
@@ -1370,6 +1369,85 @@ SELECT * FROM v$version;
 SELECT status FROM v$instance;
 SELECT osuser, username, program FROM v$session;
 ```
+
+---
+
+# Data Dictionary - Quản lý Schema & Object
+
+| Data Dictionary | Chức năng chính | Ví dụ |
+| --- | --- | --- |
+| `DBA_OBJECTS` | Danh sách tất cả các đối tượng (tables, indexes, views, procedures...) trong DB. | `SELECT object_name, object_type, status FROM dba_objects WHERE owner = 'HR';` |
+| `DBA_TABLES` | Thông tin chi tiết về các bảng (tablespace, số dòng, kích thước...). | `SELECT table_name, tablespace_name, num_rows FROM dba_tables WHERE owner = 'HR';` |
+| `DBA_TAB_COLUMNS` | Danh sách các cột, kiểu dữ liệu, độ dài và thuộc tính NULL/NOT NULL của bảng. | `SELECT column_name, data_type, data_length, nullable FROM dba_tab_columns WHERE table_name = 'EMPLOYEES';` |
+---
+
+# Data Dictionary - Quản lý Schema & Object
+
+| Data Dictionary | Chức năng chính | Ví dụ |
+| --- | --- | --- |
+| `DBA_VIEWS` | Danh sách và mã định nghĩa (query) của các View. | `SELECT view_name, text FROM dba_views WHERE owner = 'HR';` |
+| `DBA_INDEXES` | Thông tin tổng quan về các Index (kiểu index, bảng liên kết...). | `SELECT index_name, table_name, uniqueness FROM dba_indexes WHERE owner = 'HR';` |
+| `DBA_IND_COLUMNS` | Thông tin chi tiết các cột tham gia vào Index. | `SELECT index_name, column_name, column_position FROM dba_ind_columns WHERE table_name = 'EMPLOYEES';` |
+
+---
+
+# Data Dictionary - Quản lý Schema & Object
+
+| Data Dictionary | Chức năng chính | Ví dụ |
+| --- | --- | --- |
+| `DBA_CONSTRAINTS` | Thông tin về Ràng buộc (Primary Key, Foreign Key, Unique, Check). | `SELECT constraint_name, constraint_type, status FROM dba_constraints WHERE table_name = 'EMPLOYEES';` |
+| `DBA_CONS_COLUMNS` | Chi tiết các cột áp dụng cho từng ràng buộc. | `SELECT constraint_name, column_name FROM dba_cons_columns WHERE table_name = 'EMPLOYEES';` |
+
+---
+<!--class: text-sm-->
+
+# Data Dictionary - Quản lý User & Quyền (Security)
+
+| Data Dictionary | Chức năng chính | Ví dụ |
+| --- | --- | --- |
+| `DBA_USERS` | Danh sách tài khoản người dùng, trạng thái khóa/mở, tablespace mặc định. | `SELECT username, account_status, default_tablespace FROM dba_users;` |
+| `DBA_ROLES` | Danh sách các Role (nhóm quyền) trong hệ thống. | `SELECT role, authentication_type FROM dba_roles;` |
+| `DBA_TAB_PRIVS` | Các quyền trên bảng/đối tượng đã cấp cho User hoặc Role. | `SELECT grantee, table_name, privilege FROM dba_tab_privs WHERE grantee = 'HR';` |
+| `DBA_SYS_PRIVS` | Các quyền hệ thống (System Privileges) đã được cấp. | `SELECT grantee, privilege, admin_option FROM dba_sys_privs WHERE grantee = 'HR';` |
+| `DBA_ROLE_PRIVS` | Các Role đã được gán cho User hoặc Role khác. | `SELECT grantee, granted_role FROM dba_role_privs WHERE grantee = 'HR';` |
+
+---
+<!--class: text-xs-->
+
+# Data Dictionary - Quản lý Lưu trữ (Storage)
+
+| Data Dictionary | Chức năng chính | Ví dụ |
+| --- | --- | --- |
+| `DBA_TABLESPACES` | Thông tin các Tablespace (trạng thái, block size, chế độ quản lý). | `SELECT tablespace_name, status, contents FROM dba_tablespaces;` |
+| `DBA_DATA_FILES` | Danh sách các tệp dữ liệu vật lý (.dbf) gắn liền với Tablespace. | `SELECT file_name, tablespace_name, bytes/1024/1024 AS size_mb FROM dba_data_files;` |
+| `DBA_TEMP_FILES` | Danh sách các tệp dữ liệu tạm (Temp files). | `SELECT file_name, tablespace_name, bytes/1024/1024 AS size_mb FROM dba_temp_files;` |
+| `DBA_SEGMENTS` | Kích thước dung lượng thực tế đang tiêu tốn của từng object (Table, Index...). | `SELECT segment_name, segment_type, bytes/1024/1024 AS size_mb FROM dba_segments WHERE owner = 'HR';` |
+| `DBA_FREE_SPACE` | Dung lượng trống khả dụng trong các Tablespace. | `SELECT tablespace_name, SUM(bytes)/1024/1024 AS free_mb FROM dba_free_space GROUP BY tablespace_name;` |
+
+---
+
+# Data Dictionary - Lập trình PL/SQL
+
+| Data Dictionary | Chức năng chính | Ví dụ |
+| --- | --- | --- |
+| `DBA_SOURCE` | Mã nguồn của các Stored Procedure, Function, Package, Trigger. | `SELECT line, text FROM dba_source WHERE name = 'ADD_JOB_HISTORY' ORDER BY line;` |
+| `DBA_ERRORS` | Chi tiết lỗi biên dịch (compile error) của các đối tượng PL/SQL. | `SELECT name, type, line, text FROM dba_errors WHERE owner = 'HR';` |
+| `DBA_TRIGGERS` | Thông tin chi tiết và điều kiện kích hoạt của các Trigger. | `SELECT trigger_name, triggering_event, table_name, status FROM dba_triggers WHERE owner = 'HR';` |
+| `DBA_DEPENDENCIES` | Mối phụ thuộc giữa các đối tượng (ví dụ: View/Procedure dùng Table nào). | `SELECT name, type, referenced_name, referenced_type FROM dba_dependencies WHERE owner = 'HR';` |
+
+---
+<!--class: text-2xs-->
+
+# Dynamic Performance Views
+
+| Data Dictionary| Chức năng chính | Ví dụ |
+| --- | --- | --- |
+| `V$SESSION` | Thông tin các phiên kết nối đang hoạt động (Session) vào cơ sở dữ liệu. | `SELECT sid, serial#, username, status, program FROM v$session WHERE username IS NOT NULL;` |
+| `V$PROCESS` | Thông tin về các tiến trình (Process) ở cấp độ hệ điều hành. | `SELECT pid, spid, username, program FROM v$process;` |
+| `V$SQL` | Danh sách các câu lệnh SQL đã và đang được thực thi trong Shared Pool. | `SELECT sql_id, sql_text, executions, cpu_time FROM v$sql WHERE sql_text LIKE '%EMPLOYEES%';` |
+| `V$LOCK` | Thông tin về các hiện tượng khóa dữ liệu (Locks) trong hệ thống. | `SELECT sid, type, lmode, request FROM v$lock WHERE request > 0;` |
+| `V$DATABASE` | Thông tin tổng quan về Database (Tên DB, log mode, ngày tạo...). | `SELECT name, log_mode, open_mode, created FROM v$database;` |
+| `V$INSTANCE` | Thông tin chi tiết về Instance (Tên Host, phiên bản, trạng thái khởi động...). | `SELECT instance_name, host_name, version, status FROM v$instance;` |
 
 ---
 
@@ -2028,3 +2106,5 @@ EOF
 <!-- _class: empty -->
 
 # Thank you
+
+![width:600](./images/thankyou.png)
