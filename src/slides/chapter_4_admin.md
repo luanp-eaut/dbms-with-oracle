@@ -2107,4 +2107,4 @@ EOF
 
 # Thank you
 
-![width:600](./images/thankyou.png)
+![width:600](./images/the_end.png)
