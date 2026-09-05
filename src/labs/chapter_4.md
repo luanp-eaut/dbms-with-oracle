@@ -6,23 +6,128 @@
 
 **Bài 1**. Truy vấn thông tin của instance hiện tại: tên instance, host name, phiên bản, trạng thái. Sử dụng `v$instance`.
 
+<div style="display: none;">
+
+```sql
+SELECT INSTANCE_NAME, HOST_NAME, VERSION, STATUS FROM V$INSTANCE;
+```
+
+</div>
+
 **Bài 2**. Truy vấn thông tin database: tên database, DBID, ngày tạo, chế độ log (ARCHIVELOG/NOARCHIVELOG). Sử dụng `v$database`.
+
+<div style="display: none;">
+
+```sql
+SELECT NAME, DBID, CREATED, LOG_MODE FROM V$DATABASE;
+```
+
+</div>
 
 **Bài 3**. Xác định trạng thái mở của database (READ WRITE, READ ONLY, MOUNTED). Sử dụng `v$database`.
 
+<div style="display: none;">
+
+```sql
+SELECT OPEN_MODE FROM V$DATABASE;
+```
+
+</div>
+
 **Bài 4**. Liệt kê tất cả các PDB đang có trong CDB và trạng thái mở của chúng. Sử dụng `v$pdbs`.
+
+<div style="display: none;">
+
+```sql
+SELECT PDB_NAME, STATUS FROM V$PDBS;
+```
+
+</div>
 
 **Bài 5**. Xác định container hiện tại đang kết nối (root hay PDB). Sử dụng `sys_context('USERENV','CON_NAME')`.
 
+<div style="display: none;">
+
+```sql
+SELECT SYS_CONTEXT('USERENV', 'CON_NAME') AS CONTAINER_NAME FROM DUAL;
+```
+
+</div>
+
 **Bài 6**. Chuyển đổi session sang một PDB cụ thể (ví dụ `PDB1`) và kiểm tra lại container hiện tại.
+
+<div style="display: none;">
+
+```sql
+-- Chuyển sang PDB1 (cần quyền ALTER SESSION hoặc quyền sysdba)
+ALTER SESSION SET CONTAINER = PDB1;
+
+-- Kiểm tra lại
+SELECT SYS_CONTEXT('USERENV', 'CON_NAME') AS CONTAINER_NAME FROM DUAL;
+```
+
+</div>
 
 **Bài 7**. Liệt kê tất cả các common user trong CDB (tên bắt đầu bằng C##). Sử dụng `dba_users` với điều kiện `username LIKE 'C##%'`.
 
+<div style="display: none;">
+
+```sql
+SELECT USERNAME, ACCOUNT_STATUS, COMMON, ORACLE_MAINTAINED 
+FROM DBA_USERS 
+WHERE USERNAME LIKE 'C##%' AND COMMON = 'YES';
+```
+
+</div>
+
 **Bài 8**. Tạo một common user với tên `C##DEMO` và mật khẩu, cấp quyền `CREATE SESSION` với tùy chọn `CONTAINER=ALL`.
+
+<div style="display: none;">
+
+```sql
+-- Tạo common user (phải có quyền sysdba, đang kết nối vào root)
+CREATE USER C##DEMO IDENTIFIED BY DemoPassword123;
+-- Cấp quyền CREATE SESSION với container=all (có thể dùng CONTAINER=ALL)
+GRANT CREATE SESSION TO C##DEMO CONTAINER=ALL;
+```
+
+</div>
 
 **Bài 9**. Kết nối vào một PDB và tạo một local user (tên không bắt đầu C##) trong PDB đó. Sau đó truy vấn danh sách user trong PDB để thấy sự khác biệt.
 
+<div style="display: none;">
+
+```sql
+-- Chuyển sang PDB (ví dụ PDB1)
+ALTER SESSION SET CONTAINER = PDB1;
+
+-- Tạo local user (tên bắt đầu không phải C##)
+CREATE USER DEMO_LOCAL IDENTIFIED BY LocalPass123;
+
+-- Cấp quyền nếu cần
+GRANT CREATE SESSION TO DEMO_LOCAL;
+
+-- Truy vấn danh sách user trong PDB này
+SELECT USERNAME, COMMON, CON_ID FROM DBA_USERS;
+```
+
+</div>
+
 **Bài 10**. Kiểm tra trạng thái của các background processes (ít nhất là DBWn, LGWR, CKPT) thông qua view `v$bgprocess` hoặc mô tả.
+
+<div style="display: none;">
+
+```sql
+-- Xem tất cả background processes
+SELECT NAME, DESCRIPTION, STATUS FROM V$BGPROCESS WHERE PADDR != '00' ORDER BY NAME;
+
+-- Hoặc lọc cụ thể
+SELECT NAME, DESCRIPTION, STATUS 
+FROM V$BGPROCESS 
+WHERE NAME IN ('DBW0','LGWR','CKPT') AND PADDR != '00';
+```
+
+</div>
 
 ---
 
@@ -30,23 +135,159 @@
 
 **Bài 11**. Tạo một permanent tablespace tên `TS_APP` với datafile `ts_app01.dbf`, kích thước 100M, autoextend ON, next 10M, maxsize 500M, quản lý extent local.
 
+<div style="display: none;">
+
+```sql
+CREATE TABLESPACE TS_APP
+DATAFILE 'ts_app01.dbf' SIZE 100M
+AUTOEXTEND ON NEXT 10M MAXSIZE 500M
+EXTENT MANAGEMENT LOCAL;
+```
+
+</div>
+
 **Bài 12**. Tạo một temporary tablespace tên `TS_TEMP` với tempfile kích thước 200M, autoextend ON, next 50M, maxsize 1G, extent management uniform size 1M.
+
+<div style="display: none;">
+
+```sql
+CREATE TEMPORARY TABLESPACE TS_TEMP
+TEMPFILE 'ts_temp01.dbf' SIZE 200M
+AUTOEXTEND ON NEXT 50M MAXSIZE 1G
+EXTENT MANAGEMENT LOCAL UNIFORM SIZE 1M;
+```
+
+</div>
 
 **Bài 13**. Tạo một undo tablespace tên `TS_UNDO` với datafile `undo_ts01.dbf`, kích thước 500M, autoextend ON, next 100M, maxsize 2G.
 
+<div style="display: none;">
+
+```sql
+CREATE UNDO TABLESPACE TS_UNDO
+DATAFILE 'undo_ts01.dbf' SIZE 500M
+AUTOEXTEND ON NEXT 100M MAXSIZE 2G;
+```
+
+</div>
+
 **Bài 14**. Kích hoạt Oracle Managed Files (OMF) bằng cách thiết lập tham số `DB_CREATE_FILE_DEST` thành một thư mục hợp lệ (ví dụ `/u01/app/oracle/oradata/`). Sau đó tạo một tablespace `TS_OMF` với OMF, không chỉ định tên file.
+
+<div style="display: none;">
+
+```sql
+-- Thiết lập OMF (cần sysdba)
+ALTER SYSTEM SET DB_CREATE_FILE_DEST = '/u01/app/oracle/oradata/' SCOPE=BOTH;
+
+-- Tạo tablespace sử dụng OMF
+CREATE TABLESPACE TS_OMF;
+```
+
+</div>
 
 **Bài 15**. Tạo một bigfile tablespace tên `TS_BIG`, datafile kích thước 10G, autoextend, maxsize 32T. Kiểm tra thông tin bigfile trong `dba_tablespaces`.
 
+<div style="display: none;">
+
+```sql
+-- Tạo bigfile tablespace
+CREATE BIGFILE TABLESPACE TS_BIG
+DATAFILE 'ts_big01.dbf' SIZE 10G
+AUTOEXTEND ON NEXT 1G MAXSIZE 32T;
+
+-- Kiểm tra thông tin
+SELECT TABLESPACE_NAME, BIGFILE, EXTENT_MANAGEMENT, SEGMENT_SPACE_MANAGEMENT
+FROM DBA_TABLESPACES
+WHERE TABLESPACE_NAME = 'TS_BIG';
+```
+
+</div>
+
 **Bài 16**. Thêm một datafile thứ hai vào tablespace `TS_APP` với kích thước 500M.
+
+<div style="display: none;">
+
+```sql
+ALTER TABLESPACE TS_APP
+ADD DATAFILE 'ts_app02.dbf' SIZE 500M;
+```
+
+</div>
 
 **Bài 17**. Thay đổi kích thước datafile của `TS_APP` từ 100M lên 800M (resize). Kiểm tra lại kích thước.
 
+<div style="display: none;">
+
+```sql
+-- Resize datafile
+ALTER DATABASE DATAFILE 'ts_app01.dbf' RESIZE 800M;
+
+-- Kiểm tra kích thước
+SELECT FILE_NAME, BYTES/1024/1024 AS SIZE_MB
+FROM DBA_DATA_FILES
+WHERE TABLESPACE_NAME = 'TS_APP';
+```
+
+</div>
+
 **Bài 18**. Đưa tablespace `TS_APP` sang chế độ offline, sau đó online trở lại. Kiểm tra trạng thái.
+
+<div style="display: none;">
+
+```sql
+-- Đưa offline
+ALTER TABLESPACE TS_APP OFFLINE;
+
+-- Kiểm tra trạng thái
+SELECT TABLESPACE_NAME, STATUS FROM DBA_TABLESPACES WHERE TABLESPACE_NAME = 'TS_APP';
+
+-- Đưa online
+ALTER TABLESPACE TS_APP ONLINE;
+
+-- Kiểm tra lại
+SELECT TABLESPACE_NAME, STATUS FROM DBA_TABLESPACES WHERE TABLESPACE_NAME = 'TS_APP';
+```
+
+</div>
 
 **Bài 19**. Chuyển tablespace `TS_APP` sang chế độ read-only, thử thực hiện một câu lệnh INSERT vào bảng trong tablespace đó (sẽ báo lỗi), sau đó chuyển lại read-write.
 
+<div style="display: none;">
+
+```sql
+-- Chuyển sang read-only
+ALTER TABLESPACE TS_APP READ ONLY;
+
+-- Tạo bảng kiểm tra trong TS_APP (nếu chưa có) và thử insert
+-- (Giả sử bảng test có sẵn hoặc tạo mới)
+CREATE TABLE test_ts_app (id NUMBER) TABLESPACE TS_APP;
+INSERT INTO test_ts_app VALUES (1); -- Sẽ báo lỗi ORA-00372: cannot modify file ... because tablespace is read only
+
+-- Chuyển lại read-write
+ALTER TABLESPACE TS_APP READ WRITE;
+
+-- Kiểm tra insert bây giờ
+INSERT INTO test_ts_app VALUES (1); -- Sẽ thành công
+COMMIT;
+```
+
+</div>
+
 **Bài 20**. Drop tablespace `TS_OMF` bao gồm cả dữ liệu và datafile (sử dụng `INCLUDING CONTENTS AND DATAFILES`). Kiểm tra xem file có bị xóa khỏi OS không.
+
+<div style="display: none;">
+
+```sql
+-- Drop tablespace với cả datafile
+DROP TABLESPACE TS_OMF INCLUDING CONTENTS AND DATAFILES;
+
+-- Kiểm tra file trên OS (bằng lệnh host hoặc kiểm tra thủ công)
+-- Có thể dùng host lệnh (trong SQL*Plus) để xem thư mục
+HOST ls -l /u01/app/oracle/oradata/ | grep TS_OMF
+-- Hoặc dùng lệnh tương tự trên Windows: dir
+```
+
+</div>
 
 ---
 

@@ -1102,11 +1102,14 @@ SELECT tablespace_name FROM dba_tables WHERE owner='APP_USER' AND table_name='EM
 
 ---
 
-# Quản trị Index - Các loại Index
+# Quản trị Index
 
-- **B-tree index**: mặc định, thích hợp cho khóa chính, dữ liệu có tính chọn lọc cao.
-- **Bitmap index**: thích hợp cho các cột có ít giá trị phân biệt (gender, status).
-- **Function-based index**: index trên biểu thức (ví dụ UPPER(name)).
+- **Index** là một đối tượng schema tùy chọn, liên kết với một bảng hoặc cluster, giúp tăng tốc độ truy xuất dữ liệu.
+- Các loại Index thông dụng:
+  - **B-tree index**: mặc định, thích hợp cho khóa chính, dữ liệu có tính chọn lọc cao.
+  - **Bitmap index**: thích hợp cho các cột có ít giá trị phân biệt (gender, status).
+  - **Function-based index**: index trên biểu thức (ví dụ UPPER(name)).
+
 - Tạo B-tree:
 
 ```sql
@@ -1124,6 +1127,12 @@ CREATE BITMAP INDEX idx_emp_status ON employees(status) TABLESPACE ts_idx;
 ```sql
 CREATE INDEX idx_emp_upper_name ON employees(UPPER(name));
 ```
+
+---
+
+# Các loại index thông dụng
+
+![height:580](./images/index.png)
 
 ---
 
